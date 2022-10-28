@@ -10,7 +10,7 @@ Reference guides:
 -https://helpcenter.veeam.com/docs/backup/vsphere/hardened_repository_deploy.html?ver=110
 -https://www.veeam.com/wp-guide-protect-ransomware-immutable-backups.html?wpty
 
-This script does not replace any type of hardened that you should apply, for a more accurate hardened you should consult the your security team, in addition to the operating system manufacturer.
+This script does not replace any type of hardened that you should apply, for a more accurate hardened you should consult the your security team, in addition to the operating system vendor.
 
 Result Samples:
 

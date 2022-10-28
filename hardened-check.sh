@@ -99,7 +99,7 @@ array=($(ss -lntu | grep LISTEN | grep -v 127.0.0 | awk '{print $5} ' | sed 's/.
 for i in "${array[@]}"
 do
    : 
-   if ([ $i -lt 2500 ] || [ $i -gt 3000 ] && [ $i != "6162" ] )
+   if ([ $i -lt 2500 ] || [ $i -gt 3300 ] && [ $i != "6162" ] )
    then
         echoW "Warning: $i is not a veeam service port, please disable it!"	
    else 

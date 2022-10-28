@@ -12,6 +12,8 @@ Reference guides:
 
 This script does not replace any type of hardened that you should apply, for a more accurate hardened you should consult the your security team, in addition to the operating system vendor.
 
+Script path: https://github.com/magnunscheffer/veeam/blob/main/hardened-check.sh
+
 Result Samples:
 
 ![alt text](https://github.com/magnunscheffer/veeam/blob/main/output-example-1.jpg?raw=true)

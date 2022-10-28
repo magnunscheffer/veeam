@@ -12,12 +12,12 @@ Reference guides:
 
 This script does not replace any type of hardened that you should apply, for a more accurate hardened you should consult the your security team, in addition to the operating system manufacturer.
 
-Result Examples:
+Result Samples:
 
-![alt text](https://github.com/[username]/[reponame]/blob/[branch]/image.jpg?raw=true)
+![alt text](https://github.com/magnunscheffer/veeam/blob/main/output-example-1.jpg?raw=true)
 
 
-![alt text](https://github.com/[username]/[reponame]/blob/[branch]/image.jpg?raw=true)
+![alt text](https://github.com/magnunscheffer/veeam/blob/main/output-example-2.jpg?raw=true)
 
 #########################  hardened-check.sh #############################################
 

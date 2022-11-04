@@ -127,7 +127,7 @@ echoD "Cheking the Firewall status.... $fwstate"
 
 if [ "$fwstate" == "active" ] || [ "$fwstate" == "running" ]
 then 
-   echoI "Info: The firewall is enabled, but remember that only veeam service ports should be kept open: [6162, 2500-3000]"
+   echoI "Info: The firewall is enabled, but remember that only veeam service ports should be kept open: [6162, 2500-3300]"
    echoD "Current firewall rules:"
    echoD "--------------------------------------------------------------------------------"
    $fwconfig

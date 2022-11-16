@@ -23,10 +23,10 @@
   [String]$vi_usr= "administrator@vsphere.local",
 
   #vCenter Password
-  [String]$v_pwd = "Veeam123!",
+  [String]$v_pwd = "P@ssw0rd!",
 
   #vCenter FQDN
-  [String]$vi_srv = "vcenter.vbrdemo.local" 
+  [String]$vi_srv = "vcenter.domain.local" 
 )
 
 #Convert the PlainText PW and User to a Credential.

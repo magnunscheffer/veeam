@@ -19,7 +19,7 @@ terms="N"
 echoE "
 -----------------------------------------------------------------------------------------------------------------------------------------------
 | This script is independently produced and has no direct link to Veeam Software. It just checks the recommendations related to the user guide|
-| article and Veeam Write Paper "Protect against Ransomware with Immutable Backups":                                                          |
+| article and Veeam Write Paper *Protect against Ransomware with Immutable Backups*:                                                          |
 | - https://helpcenter.veeam.com/docs/backup/vsphere/hardened_repository.html?ver=110                                                         |
 | - https://www.veeam.com/wp-guide-protect-ransomware-immutable-backups.html                                                                  |
 |                                                                                                                                             |

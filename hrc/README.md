@@ -12,22 +12,21 @@ This script does not replace any type of hardened that you should apply in yours
 
 - Path: https://github.com/magnunscheffer/veeam/blob/main/hrc/hardened-check.sh
 
-## To use it, is necessary load to the repository server and run the follow steps:
+## To use it, do:
 - Download and Grant execution permission to the script:
 
-  ```bash
-  curl -O https://raw.githubusercontent.com/magnunscheffer/veeam/main/hrc/hardened-check.sh && && chmod +x hardened-check.sh
-  ```
+```bash
+curl -O https://raw.githubusercontent.com/magnunscheffer/veeam/main/hrc/hardened-check.sh && && chmod +x hardened-check.sh
+```
 - Example with short url:
 ```bash
-  curl -O https://vee.am/hrc && && chmod +x hardened-check.sh
-  ```
-  
+curl -O https://vee.am/hrc && && chmod +x hardened-check.sh
+```
 
 - Run the script passing the Repo path as a parameter, like this /hardened-check.sh repo-path, Example:
  
- ```bash
-  ./hardened-check.sh /mnt/repo01/backups
+```bash
+./hardened-check.sh /mnt/repo01/backups
 ```
 
 

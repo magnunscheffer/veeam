@@ -21,8 +21,9 @@ This script does not replace any type of hardened that you should apply in yours
 
 - Run the script passing the Repo path as a parameter, like this /hardened-check.sh repo-path, Example:
  
-  *./hardened-check.sh /mnt/repo001/backups*
-
+ ```bash
+  ./hardened-check.sh /mnt/repo001/backups
+```
 Result Samples:
 
 ![alt text](https://github.com/magnunscheffer/veeam/blob/main/output-example-1.jpg?raw=true)

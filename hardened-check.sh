@@ -175,18 +175,18 @@ do
         Info: $i is a veeam service/transport port."    
    fi
 done
+echoD 	"
+    --------------------------------------------------------------------------------"
 
-echoD 	""
 echoD 	"
     More details:
-    https://www.veeam.com/wp-guide-protect-ransomware-immutable-backups.html                                                    
+    https://www.veeam.com/wp-guide-protect-ransomware-immutable-backups.html
+
     Reference: (Page 17): '8. Only run the Veeam transport service available on the network (SSH can be an exception).           
     There should especially be no third-party network services running with root permissions.                                   
     If an attacker can gain root access via a third-party software on the Hardened Repository, then they can delete all data.'"
-echoD 	"
-    --------------------------------------------------------------------------------"
-echoD
 
+echoD
 echoD "- Cheking the SSH Service status ..."
 
 #Testing SSH Service status
@@ -234,8 +234,8 @@ then
    echoD "
 
    Current firewall rules:"
-   echoD "--------------------------------------------------------------------------------
-   $fwconfig"
+   echoD "--------------------------------------------------------------------------------"
+   $fwconfig
 else
    echoW "
    Warning: Please enable Firewall and keep only veeam ports allowed [6162, 2500-3000]!

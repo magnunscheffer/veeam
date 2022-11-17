@@ -10,12 +10,14 @@ Reference guides:
 
 This script does not replace any type of hardened that you should apply in yours REPOs, for a more accurate hardened you should consult the your security team, in addition to the operating system vendor.
 
-- Path: https://github.com/magnunscheffer/veeam/blob/main/hardened-check.sh
+- Path: https://github.com/magnunscheffer/veeam/blob/main/hrc/hardened-check.sh
 
 ## To use it, is necessary load to the repository server and run the follow steps:
 - Download and Grant execution permission to the script:
 
-  *chmod +x /path/hardened-check.sh*
+  ```bash
+  curl -O https://raw.githubusercontent.com/magnunscheffer/veeam/main/hrc/hardened-check.sh && && chmod +x hardened-check.sh
+  ```
 
 - Run the script passing the Repo path as a parameter, like this /hardened-check.sh repo-path, Example:
  

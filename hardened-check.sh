@@ -234,7 +234,7 @@ then
    echoD "
    Current firewall rules:"
    echoD "--------------------------------------------------------------------------------"
-   `$fwconfig`
+   $fwconfig
 else
    echoW "
    Warning: Please enable Firewall and keep only veeam ports allowed [6162, 2500-3000]!

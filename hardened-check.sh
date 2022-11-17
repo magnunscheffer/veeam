@@ -1,22 +1,40 @@
 #!/bin/bash
+
+
+#Autor: Magnun Scheffer | Contact: mfs_@outlook.com
+#Version: 0.2
+#Download: 'curl -O https://raw.githubusercontent.com/magnunscheffer/veeam/main/hardened-check.sh  && chmod +x hardened-check.sh'
+#Run: './hardened-check.sh /mnt/repo01/backups'
+# The parameter '/mnt/repo01/backups' is the folder visible on VBR console --> Backup Infrastructure --> Backup Repositories --> Path
+#Disclaimer:If you are considering using this script, be aware that you are doing so at your own risk.
+#Plataform tested: RedHat/CentOS 7 & 8 / Ubunto 20.04
+
+
+#Configuring terminal colors
 terminalColorClear='\033[0m'
 terminalColorInfo='\033[0;32m'
 terminalColorWarning='\033[0;33m' 
-terminalColorError='\033[0;41m'
+terminalColorBanner='\033[0;41m'
+#Regular Color
 echoD() {
     echo -e "${terminalColorClear}$1${terminalColorClear}"
 } 
+#Information Color (Green)
 echoI() {
     echo -e "${terminalColorInfo}$1${terminalColorClear}"
 }
+#Warning Color (Orange)
  echoW() {
     echo -e "${terminalColorWarning}$1${terminalColorClear}"
 }
- echoE() {
-    echo -e "${terminalColorError}$1${terminalColorClear}"
+#Banner Color (Red)
+ echoB() {
+    echo -e "${terminalColorBanner}$1${terminalColorClear}"
 } 
+
+#Defaul Status for terms.
 terms="N"
-echoE "
+echoB "
 -----------------------------------------------------------------------------------------------------------------------------------------------
 | This script is independently produced and has no direct link to Veeam Software. It just checks the recommendations related to the user guide|
 | article and Veeam Write Paper *Protect against Ransomware with Immutable Backups*:                                                          |
@@ -26,7 +44,7 @@ echoE "
 | By using this script you are at your own risk. Do you accept these terms? [Y=YES or N=NO]:                                                  |
 -----------------------------------------------------------------------------------------------------------------------------------------------"
 read terms
-
+#Testing if the terms were accepted.
 if [ -z "$terms" ] || [ ${terms^^} != "Y" ] 
 then 
 	echoI
@@ -34,7 +52,10 @@ then
 	exit
 fi
 
+#Log Path under construction... 
 log="/tmp/log_$HOSTNAME.txt"
+
+#Start of script
 echoD "-------------------Starting at $(date) ------------------"
 echoD "- Setting repo path: $1 ..."
 repo=$1
@@ -56,11 +77,13 @@ fi
 
 echoD
 echoD "- Checking the folder owner for '$repo' and the veeamtransport service user ..."
-
+#Geting information about service account 
 svcuser=$(ps axo user:20,pid,start,time,cmd | grep "veeamtransport --run-service" | head -n1 | awk '{print $1;}')
-dirowner=$(ls -ld $repo | awk '{print $3}')
-#echo $dirowner $svcuser
 
+#Geting information about dir owner 
+dirowner=$(ls -ld $repo | awk '{print $3}')
+
+#Testing if the dir owner is correct.
 if [ "$dirowner" == "$svcuser" ]
 then 
     echoI "
@@ -82,9 +105,11 @@ fi
 
 echoD
 echoD "- Checking the folder permissions for '$repo' ..."
+#Geting information about the permissions.
 permission=$(ls -ld $repo | awk '{print $1}')
 #echo $permission
 
+#Comparing the permissions with the right value: 700
 if [ "$permission" == "$permok" ]
 then 
     echoI "
@@ -104,10 +129,13 @@ fi
 
 echoD 
 echoD "- Checking the SUDO rights ..."
+#Default message for a user without SUDO rights. 
 messagenosudo=`echo "User $svcuser is not allowed to run sudo on $HOSTNAME."`
-#echo $messagenosudo
+
+#Geting info about sudo for the service user account.
 sudoresult=$(sudo -l -U $svcuser)
 
+#Comparing with the no sudo message.
 if [ "$sudoresult" == "$messagenosudo" ]
 then 
     echoI "
@@ -128,17 +156,23 @@ fi
 
 echoD
 echoD "- Cheking the LISTEN ports ..."
-echoD "--------------------------------------------------------------------------------"
+echoD "
+    --------------------------------------------------------------------------------"
+#Geting all ports in listen mode, except for the loopback.    
 array=($(ss -lntu | grep LISTEN | grep -v 127.0.0 | awk '{print $5} ' | sed 's/.*://' | sort | uniq))
 
+#Testing each port if is a veeam port
 for i in "${array[@]}"
 do
    : 
+   #Testing each port if is a veeam port
    if ([ $i -lt 2500 ] || [ $i -gt 3300 ] && [ $i != "6162" ] )
    then
-        echoW "Warning: $i is not a veeam service port, please disable it!"
+        echoW "
+        Warning: $i is not a veeam service port, please disable it!"
    else 
-	echoI "Info: $i is a veeam service/transport port."    
+	echoI "
+        Info: $i is a veeam service/transport port."    
    fi
 done
 
@@ -149,11 +183,13 @@ echoD 	"
     Reference: (Page 17): '8. Only run the Veeam transport service available on the network (SSH can be an exception).           
     There should especially be no third-party network services running with root permissions.                                   
     If an attacker can gain root access via a third-party software on the Hardened Repository, then they can delete all data.'"
-echoD 	"--------------------------------------------------------------------------------"
+echoD 	"
+    --------------------------------------------------------------------------------"
 echoD
 
 echoD "- Cheking the SSH Service status ..."
 
+#Testing SSH Service status
 sshstatus=`systemctl status $service | grep running`
 
 if [ -z "$sshstatus" ]
@@ -169,7 +205,8 @@ then
 else 
     echoW "
     Warning: Is not recommend keep SSH service enabled in Veeam Hardened Repository!, please disable it!"
-    echoD "Service Status: $sshstatus"	
+    echoD "
+    Service Status: $sshstatus"	
     echoW "
 
     More details:
@@ -182,6 +219,7 @@ fi
 echoD
 echoD "- Cheking the Firewall status.... $fwstate"
 
+#Testing if the FW is enable.
 if [ "$fwstate" == "active" ] || [ "$fwstate" == "running" ]
 then 
    echoI "
@@ -196,8 +234,8 @@ then
    echoD "
 
    Current firewall rules:"
-   echoD "--------------------------------------------------------------------------------"
-   $fwconfig
+   echoD "--------------------------------------------------------------------------------
+   $fwconfig"
 else
    echoW "
    Warning: Please enable Firewall and keep only veeam ports allowed [6162, 2500-3000]!

@@ -38,8 +38,3 @@ curl -OL --max-redirs 5 https://vee.am/hrc22 && mv hrc22 hr-check.sh  && chmod +
 ### Result Example:
 
 ![alt text](https://github.com/magnunscheffer/veeam/blob/main/hrc/run-example1.png?raw=true)
-
-
-
-#########################  hardened-check.sh #############################################
-

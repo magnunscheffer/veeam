@@ -26,7 +26,7 @@ curl -O https://vee.am/hr-check.sh && chmod +x hr-check.sh
 - Run the script passing the Repo path as a parameter, like this example:
  
 ```bash
-./hardened-check.sh /mnt/repo01/backups
+./hr-check.sh /mnt/repo01/backups
 ```
 
 

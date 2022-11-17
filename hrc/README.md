@@ -16,14 +16,14 @@ This script does not replace any type of hardened that you should apply in yours
 - Download and Grant execution permission to the script:
 
 ```bash
-curl -O https://raw.githubusercontent.com/magnunscheffer/veeam/main/hrc/hardened-check.sh && && chmod +x hardened-check.sh
+curl -O https://raw.githubusercontent.com/magnunscheffer/veeam/main/hrc/hardened-check.sh && chmod +x hardened-check.sh
 ```
 - Example with short url:
 ```bash
-curl -O https://vee.am/hrc && && chmod +x hardened-check.sh
+curl -O https://vee.am/hrc && chmod +x hardened-check.sh
 ```
 
-- Run the script passing the Repo path as a parameter, like this /hardened-check.sh repo-path, Example:
+- Run the script passing the Repo path as a parameter, like this example:
  
 ```bash
 ./hardened-check.sh /mnt/repo01/backups

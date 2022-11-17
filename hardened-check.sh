@@ -234,8 +234,6 @@ then
    echoD "
    Current firewall rules:"
    echoD "--------------------------------------------------------------------------------"
-   #$fwconfig
-
    $fwconfig
 else
    echoW "

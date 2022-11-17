@@ -12,7 +12,7 @@ This script does not replace any type of hardened that you should apply in yours
 - Path: https://github.com/magnunscheffer/veeam/blob/main/hrc/hr-check.sh
 
 ## How to:
-- Download and Grant execution permission to the script:
+- Download and grant execute permission to the script directly on the repository server:
 
 ```bash
 curl -O https://raw.githubusercontent.com/magnunscheffer/veeam/main/hrc/hr-check.sh && chmod +x hr-check.sh

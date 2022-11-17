@@ -1,7 +1,7 @@
 
 # Hardened Repository Check
 
-The hardened-check.sh script was created to highlight possible configuration errors in the hardened repository, they are basic checks based on official Veeam guides:
+The hr-check.sh script was created to highlight possible configuration errors in the hardened repository, they are basic checks based on official Veeam guides:
 
 - https://helpcenter.veeam.com/docs/backup/vsphere/hardened_repository_deploy.html?ver=110
 

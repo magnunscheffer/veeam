@@ -1,5 +1,5 @@
 
-# Hardened Repository Check > hr-check.sh 
+# Hardened Repository Check
 
 The hardened-check.sh script was created to highlight possible configuration errors in the hardened repository, they are basic checks based on official Veeam guides:
 

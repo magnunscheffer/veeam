@@ -11,7 +11,7 @@ This script does not replace any type of hardened that you should apply in yours
 
 - Path: https://github.com/magnunscheffer/veeam/blob/main/hrc/hr-check.sh
 
-## How to, step by step:
+## How to:
 - Download and Grant execution permission to the script:
 
 ```bash

@@ -17,7 +17,7 @@ This script does not replace any type of hardened that you should apply in yours
 ```bash
 curl -O https://raw.githubusercontent.com/magnunscheffer/veeam/main/hrc/hr-check.sh && chmod +x hr-check.sh
 ```
-- Example with short url:
+Example with short url:
 ```bash
 curl -OL --max-redirs 5 https://vee.am/hrc22 && mv hrc22 hr-check.sh  && chmod +x hr-check.sh
 ```

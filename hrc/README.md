@@ -22,10 +22,6 @@ curl -O https://raw.githubusercontent.com/magnunscheffer/veeam/main/hrc/hr-check
 curl -OL --max-redirs 5 https://vee.am/hrc22 && mv hrc22 hr-check.sh  && chmod +x hr-check.sh
 ```
 
-Download example:
-![alt text](https://github.com/magnunscheffer/veeam/blob/main/hrc/download-example.png?raw=true)
-
-
 - Run the script passing the Repo path as a parameter, like this example:
  
 ```bash
@@ -33,9 +29,13 @@ Download example:
 ```
 
 
+### Download & Run example:
+![alt text](https://github.com/magnunscheffer/veeam/blob/main/hrc/download-example.png?raw=true)
 
 
-Result Example:
+-----------------------------------------------------------------
+
+### Result Example:
 
 ![alt text](https://github.com/magnunscheffer/veeam/blob/main/hrc/run-example1.png?raw=true)
 

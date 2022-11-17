@@ -20,7 +20,7 @@ curl -O https://raw.githubusercontent.com/magnunscheffer/veeam/main/hrc/hr-check
 ```
 - Example with short url:
 ```bash
-curl -O https://vee.am/hr-check.sh && chmod +x hr-check.sh
+curl -OL --max-redirs 5 https://vee.am/hrc22 && mv hrc22 hr-check.sh  && chmod +x hr-check.sh
 ```
 
 - Run the script passing the Repo path as a parameter, like this example:

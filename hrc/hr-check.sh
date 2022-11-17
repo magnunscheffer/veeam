@@ -4,6 +4,7 @@
 #Autor: Magnun Scheffer | Contact: mfs_@outlook.com
 #Version: 0.2
 #Download: 'curl -O https://raw.githubusercontent.com/magnunscheffer/veeam/main/hrc/hr-check.sh && chmod +x hr-check.sh'
+#Alternative: 'curl -OL --max-redirs 5 https://vee.am/hrc22 && mv hrc22 hr-check.sh  && chmod +x hr-check.sh'
 #Run: './hr-check.sh /mnt/repo01/backups'
 # The parameter '/mnt/repo01/backups' is the folder visible on VBR console --> Backup Infrastructure --> Backup Repositories --> Path
 #Disclaimer:If you are considering using this script, be aware that you are doing so at your own risk.

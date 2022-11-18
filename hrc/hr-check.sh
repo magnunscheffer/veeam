@@ -8,7 +8,7 @@
 #Run: './hr-check.sh /mnt/repo01/backups'
 # The parameter '/mnt/repo01/backups' is the folder visible on VBR console --> Backup Infrastructure --> Backup Repositories --> Path
 #Disclaimer:If you are considering using this script, be aware that you are doing so at your own risk.
-#Plataform tested: RedHat/CentOS 7 & 8 / Ubunto 20.04
+#Plataform tested: RedHat/CentOS 7 & 8 / Ubuntu 20.04
 
 
 #Configuring terminal colors

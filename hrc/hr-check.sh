@@ -79,7 +79,7 @@ fi
 echoD
 echoD "- Checking the folder owner for '$repo' and the veeamtransport service user ..."
 #Geting information about service account 
-svcuser=$(ps axo user:20,pid,start,time,cmd | grep "veeamtransport --run-service" | head -n1 | awk '{print $1;}')
+svcuser=$(ps axo user:20,pid,start,time,cmd | grep "veeamtransport --run-service" | grep -v grep |  head -n1 | awk '{print $1;}')
 
 #Geting information about dir owner 
 dirowner=$(ls -ld $repo | awk '{print $3}')

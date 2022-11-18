@@ -95,7 +95,7 @@ then
     Reference: 'Both owner and group can be the account that you plan to use to connect to the Linux server.'"
 else 
     echoW "
-    Warning: The user: $svcuser is different from the folder owner: $dirowner !, Please connect the repository to veeam using single-use credentials account $dirowner.
+    Warning: The user: $svcuser is different from the folder owner: $dirowner !,Please ensure that the user configured in the folder is the same as the one configured in the veeam console.
     
     More details:
     https://helpcenter.veeam.com/docs/backup/vsphere/hardened_repository_deploy.html?ver=110#step-1--prepare-directory-on-linux-server-for-backups

@@ -1,11 +1,11 @@
 <#
 .Requirements 
-- Veeam Powershell PSSnapin
+- Veeam Powershell Module
 - Vmware PowerCli 12 or above 
 - Veeam Running with a service account with permissions at vCenter.
 
 .DESCRIPTION
- This script search for VM replicas with Orphaned snapshots "Veeam Replica Working Snapshot" caused by "An existing connection was forcibly closed by the remote host" error. 
+ This script search for VM in DR PLan and re-ip linux VMs only, skiping windows VMs. 
 .EXAMPLE 
  Put this script on "pre-script" session at Replication Job. (Job Settings --> Advanced --> Scripts --> Pre-Script)
 
@@ -24,6 +24,6 @@ $parentCmd = (Get-WmiObject Win32_Process -Filter "processid='$parentPid'").Comm
 $cmdArgs = $parentCmd.Replace('" "','","').Replace('"','').Split(',')
 $jobName = (Get-VBRJob | ? {$cmdArgs[4] -eq $_.Id.ToString()}).Name
 
-$job = Get-VBRJob -Name $jobName
+$fplan = Get-VBRFailoverPlan -Name $jobName
 
-Write-Host $job
+$fplan | Export-Csv -Path C:\git\veeam\linux-reip\log.csv -NoClobber -Delimiter ";"

@@ -79,7 +79,7 @@ fi
 echoD
 echoD "- Checking the folder owner for '$repo' and the veeamtransport service user ..."
 #Geting information about service account 
-svcuser=$(ps axo user:20,pid,start,time,cmd | grep "veeamtransport --run-service" | head -n1 | awk '{print $1;}')
+svcuser=$(ps axo user:20,pid,start,time,cmd | grep "veeamtransport --run-service" | grep -v grep |  head -n1 | awk '{print $1;}')
 
 #Geting information about dir owner 
 dirowner=$(ls -ld $repo | awk '{print $3}')
@@ -95,7 +95,7 @@ then
     Reference: 'Both owner and group can be the account that you plan to use to connect to the Linux server.'"
 else 
     echoW "
-    Warning: The user: $svcuser is different from the folder owner: $dirowner !, Please connect the repository to veeam using single-use credentials account $dirowner.
+    Warning: The user: $svcuser is different from the folder owner: $dirowner!. Please ensure that the user configured in the folder is the same as the one configured in the veeam console.
     
     More details:
     https://helpcenter.veeam.com/docs/backup/vsphere/hardened_repository_deploy.html?ver=110#step-1--prepare-directory-on-linux-server-for-backups

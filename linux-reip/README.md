@@ -12,7 +12,7 @@ https://docs.vmware.com/en/VMware-vSphere/7.0/com.vmware.esxi.install.doc/GUID-F
 - CredentialManager Powershell module installed in VBR (to interact with Windows 'Credential Manager'), for more information:
 
 https://www.powershellgallery.com/packages/CredentialManager/2.0
-- _"vCenter"_ and _"Default"_ Credentials are mandatory, please read the step by step guide to know how to configure that.
+- _"vCenter"_ and _"Default"_ credentials are mandatory!. Please read the step by step guide to know how to configure that.
 - If you have VMs running CentOs/RHEL (5-6). It is necessary run this code inside each vm before replicating it. This command will prevent the NIC from being renamed after a failover (because of MAC address change):
 ```bash
 sudo ln -s /dev/null /etc/udev/rules.d/75-persistent-net-generator.rules

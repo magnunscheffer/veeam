@@ -123,18 +123,18 @@ ForEach ($Cred in $CredList)
   $CredId =Get-StringHash -String $Cred.Profile
   If ($Cred.Action -eq "Add") 
   {
-    cmdkey /add:$($CredId) /user:$($Cred.Username) /pass:$($Cred.Password) | Out-File -FilePath $LogName -Append    
+    #cmdkey /add:$($CredId) /user:$($Cred.Username) /pass:$($Cred.Password) | Out-File -FilePath $LogName -Append    
+    New-StoredCredential -Target $($CredId) -UserName $($Cred.Username) -Password $($Cred.Password)
   }  
   If ($Cred.Action -eq "Delete") 
   {
-    cmdkey /delete:$($CredId) | Out-File -FilePath $LogName -Append
+    #cmdkey /delete:$($CredId) | Out-File -FilePath $LogName -Append
+    Remove-StoredCredential -Target $($CredId)
   }
 }
 #Confidential information cleaning
 remove-item -Force -Path $credfile -Confirm:$false
 Add-Content -Path $credfile -Value 'Profile;Username;Password;Action' -Force
-cmdkey /list | Out-File -FilePath $LogName -Append
-
 
 #Geting information about Failover Plan
 $parentPid = (Get-WmiObject Win32_Process -Filter "processid='$pid'").parentprocessid.ToString()

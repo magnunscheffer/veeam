@@ -36,20 +36,23 @@ Install-Module -Name CredentialManager -Force
     - Whenever you need to add or remove credentials, just populate the csv again and the credentials will be created in the next script run.
 
   ### Creating Default/vCenter credentials example:
-    - Fill out the csv like the example, change only the columns _Username_ and _Password_ :
   
-    ![alt text](https://github.com/magnunscheffer/veeam/blob/main/linux-reip/csv-example.PNG?raw=true)
+  - Fill out the csv like the example, change only the columns _Username_ and _Password_ :
+  
+  ![alt text](https://github.com/magnunscheffer/veeam/blob/main/linux-reip/csv-example.PNG?raw=true)
+  
   ### Creating default credentials with aditionals credentials example:    
   - If you need to create additional credentials for guest VMs (Example: VMs with another username or password), follow the example below:
   
-    ![alt text](https://github.com/magnunscheffer/veeam/blob/main/linux-reip/csv-example-plus.PNG?raw=true)      
+  ![alt text](https://github.com/magnunscheffer/veeam/blob/main/linux-reip/csv-example-plus.PNG?raw=true)      
   
-    > Note: The profile name must be exactly the name of the VMware VM (replica source). If the script has a custom credential for the VM, the "Default" credential will be ignored.
+  > Note: The profile name must be exactly the name of the VMware VM (replica source). If the script has a custom credential for the VM, the "Default" credential will be ignored.
         
-- To delete a credential from Windows Credential Manager just fillout like this:
+### To delete a credential from Windows Credential Manager just fillout like this:
 
-![alt text](https://github.com/magnunscheffer/veeam/blob/main/linux-reip/csv-example-delete.PNG?raw=true)      
+![alt text](https://github.com/magnunscheffer/veeam/blob/main/linux-reip/csv-example-delete.PNG?raw=true)  
 
+## Parameters configurations:
 - Set the parameters in the reip.ps1:
   - $vi_srv = The vCenter FQDN, _Example: "vcenter.domain.local"_
   - $rep_sufix  = Suffix used in replica jobs, _Example:  "\_replica"_

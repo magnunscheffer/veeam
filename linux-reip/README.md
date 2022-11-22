@@ -12,7 +12,7 @@ https://docs.vmware.com/en/VMware-vSphere/7.0/com.vmware.esxi.install.doc/GUID-F
 - CredentialManager Powershell module installed in VBR (to interact with Windows 'Credential Manager'), for more information:
 
 https://www.powershellgallery.com/packages/CredentialManager/2.0
-- vCenter and Guest Default Credentials are mandatory, please use the auxiliar script  "./Manage-ReipCred.ps1" to create it.
+- vCenter and Guest Default Credentials are mandatory, please use the auxiliar script  ".\Manage-ReipCred.ps1" to create it.
 
 ## Step by Step:
 - Install VMWare Powercli on VBR Server:
@@ -42,7 +42,7 @@ Install-Module -Name CredentialManager -Force
 
 - Ajust the parameters in the reip.ps1:
   - $vi_srv = The vCenter FQDN, _Example: "vcenter.domain.local"_
-  - $rep_sufix  = Suffix used in replica jobs, _Example:"_replica"_
+  - $rep_sufix  = Suffix used in replica jobs, _Example: "\_replica"_
   - $LogPath = This script generate a log for troubleshooting proprose, so set the path for this logs, _Example: "C:\logs\"._
 
 - Associate this script (reip.ps1) with yours Failover Plans OP:

@@ -1,0 +1,4 @@
+Profile;Username;Password;Action
+Default;root;Veeam123!;Add
+vCenter;Administrator@vsphere.local;Veeam123!;Add
+DR-VM2;veeam;Veeam123!;Add

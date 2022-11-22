@@ -19,24 +19,37 @@ This script can be attached to multiple replications jobs.
 .PARAMETERS
 #>
 param(
-  #vCenter usernamme
-  [String]$vi_usr= "administrator@vsphere.local",
+  #vCenter Server Name
+  [String]$vi_srv= "vcenter.vbrdemo.local",
 
-  #vCenter Password
-  [String]$v_pwd = "Veeam123!",
-
-  #vCenter FQDN
-  [String]$vi_srv = "vcenter.vbrdemo.local", 
-  
   #ReplicaSufix
   [String]$rep_sufix = "_Replica" ,
 
-  #Csvfile
-  [String]$csvfile = "C:\Git\veeam\linux-reip\config.csv",
-
   #Log path
-  [string]$LogPath = "C:\git\veeam\linux-reip\"
+  [string]$Path = "C:\git\veeam\linux-reip\",
+
+  #Credentials Upload file
+  [string]$credfile = $Path + "creds.csv"
 )
+
+Function Get-StringHash 
+{ 
+    param
+    (
+        [String] $String,
+        $HashName = "MD5"
+    )
+    $bytes = [System.Text.Encoding]::UTF8.GetBytes($String)
+    $algorithm = [System.Security.Cryptography.HashAlgorithm]::Create('MD5')
+    $StringBuilder = New-Object System.Text.StringBuilder 
+  
+    $algorithm.ComputeHash($bytes) | 
+    ForEach-Object { 
+        $null = $StringBuilder.Append($_.ToString("x2")) 
+    } 
+  
+    $StringBuilder.ToString() 
+}
 function New-NetMask {
   param (
     [Parameter(Mandatory=$true)]
@@ -96,18 +109,32 @@ function New-VmIpMask {
   return $IpMask
 }
 
-
-#Convert the PlainText PW and User to a Credential.
-$vi_pwd = ConvertTo-SecureString $v_pwd -AsPlainText -Force
-$vi_cred = New-Object System.Management.Automation.PSCredential -ArgumentList $vi_usr, $vi_pwd
-
 #importing profiles configuration
 $logtime = (Get-Date -Format "ddMMyyyy_HHmmss")
-$LogName = $LogPath +"Log_"+$logtime+".log"
-
+$LogName = $Path +"Log_"+$logtime+".log"
 
 write-output "Starting re-ip process at: $(Get-Date)" | Out-File -FilePath $LogName 
-$ProfileList = Import-Csv -Path $csvfile -Delimiter ";"  
+
+
+$CredList = Import-Csv -Path $credfile -Delimiter ";"
+ForEach ($Cred in $CredList) 
+{
+  #masking the profile name
+  $CredId =Get-StringHash -String $Cred.Profile
+  If ($Cred.Action -eq "Add") 
+  {
+    cmdkey /add:$($CredId) /user:$($Cred.Username) /pass:$($Cred.Password) | Out-File -FilePath $LogName -Append    
+  }  
+  If ($Cred.Action -eq "Delete") 
+  {
+    cmdkey /delete:$($CredId) | Out-File -FilePath $LogName -Append
+  }
+}
+#Confidential information cleaning
+remove-item -Force -Path $credfile -Confirm:$false
+Add-Content -Path $credfile -Value 'Profile;Username;Password;Action' -Force
+cmdkey /list | Out-File -FilePath $LogName -Append
+
 
 #Geting information about Failover Plan
 $parentPid = (Get-WmiObject Win32_Process -Filter "processid='$pid'").parentprocessid.ToString()
@@ -125,7 +152,13 @@ $VMlist | Out-File -FilePath $LogName -Append
 If ($FPlan.Platform -eq "VMWare") 
 {
   #Connecting to vCenter Server if is Vmware
+  #Convert the PlainText PW and User to a Credential.
+
+  cmdkey /list:(Get-StringHash -String "vCenter") #| Out-File -FilePath $LogName -Append
+
+  $vi_cred = Get-StoredCredential -Target (Get-StringHash -String "vCenter")
   Connect-VIServer -Server $vi_srv -Credential $vi_cred -Force | Out-File -FilePath $LogName -Append
+
   Foreach ($VM in $VMList) 
   {
     Write-Output "-------------------------------------------------------------------------------------------------------------" | Out-File -FilePath $LogName -Append
@@ -163,15 +196,19 @@ If ($FPlan.Platform -eq "VMWare")
       $VMIpMask =  New-VmIpMask -IpAddress $VMGuest.Net.IpConfig.IpAddress[0].IpAddress -Prefix $VMGuest.Net.IpConfig.IpAddress[0].PrefixLength
       $ReIPRule = $ReIp | Where-Object {$_.SourceIp -eq $VMIpMask} 
       
-      #Defining network parameters.
-      $ProfileUsed = $ProfileList | Where-Object {$_.ProfileName -eq $($VM.Item.Name)} 
-      $ProfileUsed | Out-File -FilePath $LogName -Append      
+      #Looking for a custom guest credential
+      $Guest_Cred = Get-StoredCredential -Target (Get-StringHash -String $VM.Item.Name)
+      $Guest_Cred| Out-File -FilePath $LogName -Append 
+      #$ProfileUsed = $ProfileList | Where-Object {$_.ProfileName -eq $($VM.Item.Name)} 
+      #$ProfileUsed | Out-File -FilePath $LogName -Append      
       
-      #Testing if VM doesn't have a custom profile.
-      If (!$ProfileUsed)
+      #Testing if VM doesn't have a custom credential.
+      If (!$Guest_Cred)
       {
-        $ProfileUsed = $ProfileList | Where-Object {$_.ProfileName -eq "Default"}
-        $ProfileUsed | Out-File -FilePath $LogName -Append      
+        $Guest_Cred = Get-StoredCredential -Target (Get-StringHash -String "Default")
+        $Guest_Cred| Out-File -FilePath $LogName -Append
+        #$ProfileUsed = $ProfileList | Where-Object {$_.ProfileName -eq "Default"}
+        #$ProfileUsed | Out-File -FilePath $LogName -Append      
       }       
 
       #Creating IP data for replacing at config file
@@ -196,12 +233,11 @@ If ($FPlan.Platform -eq "VMWare")
       $NewGateway | Out-File -FilePath $LogName -Append     
       #Creating a new prefix
       $NewPrefix = New-Prefix -IpAddress $ReIPRule.TargetMask
-      $NewPrefix | Out-File -FilePath $LogName -Append    
-
-      #Creating the guest credential
-      $guest_pwd = ConvertTo-SecureString $($ProfileUsed.'guest-pwd-file'.Trim()) -AsPlainText -Force
-      $guest_cred = New-Object System.Management.Automation.PSCredential -ArgumentList $($ProfileUsed.'guest-usr'.Trim()), $guest_pwd
-      $guest_cred | Out-File -FilePath $LogName -Append      
+      $NewPrefix | Out-File -FilePath $LogName -Append
+      #Creating a replaced prefix
+      $ReplacedPrefix = $VMGuest.Net.IpConfig.IpAddress[0].PrefixLength 
+      $ReplacedPrefix | Out-File -FilePath $LogName -Append    
+      
 
       Switch ($VMGuest.GuestFullName)
       {
@@ -210,12 +246,27 @@ If ($FPlan.Platform -eq "VMWare")
           Write-Output "Guest OS: CentOS/RHEL 6" | Out-File -FilePath $LogName -Append      
           $ifcfg_path= "/etc/sysconfig/network-scripts/ifcfg-eth0"
           $routecmd="route -n | grep UG | awk '{print $2;}'"
+          #Creating new network configuration
+          $NewNetConfig= @"
+sed -i `"s/IPADDR=$($ReplacedIp)/IPADDR=$($NewIp)/`" $($ifcfg_path)
+sed -i `"s/NETMASK=$($ReplacedMask)/NETMASK=$($NewMask)/`" $($ifcfg_path)
+sed -i `"s/GATEWAY=$($ReplacedGateway)/GATEWAY=$($NewGateway)/`" $($ifcfg_path)
+sed -i `"s/PREFIX=$($ReplacedPrefix)/PREFIX=$($NewPrefix)/`" $($ifcfg_path)
+service network restart
+"@
         }        
         {($_ -like "*CentOs 7*") -or ($_ -like "*CentOs 8*") -or ($_ -like "*RedHat 7*") -or ($_ -like "*RedHat 8*")} 
         {
           Write-Output "Guest OS: CentOS/RHEL 7-8" | Out-File -FilePath $LogName -Append      
           $ifcfg_path= "/etc/sysconfig/network-scripts/ifcfg-ens192"
           $routecmd="ip route | grep default | awk '{print `$3;}'"
+          $NewNetConfig= @"
+sed -i `"s/IPADDR=$($ReplacedIp)/IPADDR=$($NewIp)/`" $($ifcfg_path)
+sed -i `"s/NETMASK=$($ReplacedMask)/NETMASK=$($NewMask)/`" $($ifcfg_path)
+sed -i `"s/GATEWAY=$($ReplacedGateway)/GATEWAY=$($NewGateway)/`" $($ifcfg_path)
+sed -i `"s/PREFIX=$($ReplacedPrefix)/PREFIX=$($NewPrefix)/`" $($ifcfg_path)
+systemctl restart network
+"@          
         }
         {$_ -like "*Ubuntu 20*"} 
         {
@@ -224,21 +275,13 @@ If ($FPlan.Platform -eq "VMWare")
         }
       }
 
-      #Creating new network configuration
-      $NewNetConfig= @"
-sed -i `"s/IPADDR=$($ReplacedIp)/IPADDR=$($NewIp)/`" $($ifcfg_path)
-sed -i `"s/NETMASK=$($ReplacedMask)/NETMASK=$($NewMask)/`" $($ifcfg_path)
-sed -i `"s/GATEWAY=$($ReplacedGateway)/GATEWAY=$($NewGateway)/`" $($ifcfg_path)
-sed -i `"s/PREFIX=$($VMGuest.Net.IpConfig.IpAddress[0].PrefixLength)/PREFIX=$($NewPrefix)/`" $($ifcfg_path)
-systemctl restart network
-"@
       #Get VM From vCenter
       $Vi_Vm = Get-VM $VMName
       Write-Output "VMware VM Object:" $Vi_Vm | Out-File -FilePath $LogName -Append      
       #Running network config update
       Write-Output "Running the network re-ip inside guest:" | Out-File -FilePath $LogName -Append
       $NewNetConfig | Out-File -FilePath $LogName -Append      
-      ($Vi_Vm | Invoke-VMScript -ScriptText $NewNetConfig -GuestCredential $guest_cred).ScriptOutput.Trim() | Out-File -FilePath $LogName -Append      
+      ($Vi_Vm | Invoke-VMScript -ScriptText $NewNetConfig -GuestCredential $Guest_Cred).ScriptOutput.Trim() | Out-File -FilePath $LogName -Append      
 
       #Testing if network is responsive
       $pinggw = @"
@@ -249,7 +292,7 @@ ping -c4 `$gw | grep -Po "[[:digit:]]+ *(?=%)"
       Write-Output "Testing Network Connectivity against default gateway:" | Out-File -FilePath $LogName -Append
       $pinggw | Out-File -FilePath $LogName -Append
 
-      $pl = ($Vi_Vm | Invoke-VMScript -ScriptText $pinggw -GuestCredential $guest_cred).ScriptOutput.Trim() 
+      $pl = ($Vi_Vm | Invoke-VMScript -ScriptText $pinggw -GuestCredential $Guest_Cred).ScriptOutput.Trim() 
       Write-Output "" | Out-File -FilePath $LogName -Append
       Write-Output "Package Lost : $($pl.Trim()) %" | Out-File -FilePath $LogName -Append
       #Analysing the result

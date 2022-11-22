@@ -29,7 +29,7 @@ Install-Module VMware.PowerCLI -Scope AllUsers -SkipPublisherCheck -Force
 Install-Module -Name CredentialManager -Force
 ```
 
-- Create vCenter and Default Guest Credential:
+- Create the vCenter and the Default Guest Credentials:
   - Download the csv file _"creds.csv"_ and place it in the same directory as the _"reip.ps1"_ script. This csv will be used to load the first credentials for the Windows Vault (Credential Manager). After that, the csv content will be cleaned up, to prevent passwords from being exposed. Whenever you need to add or remove credentials, just populate the csv again and the credentials will be created in the next script run.
   - CSV download link: 
 

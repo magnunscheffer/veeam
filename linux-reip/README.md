@@ -13,7 +13,7 @@ https://docs.vmware.com/en/VMware-vSphere/7.0/com.vmware.esxi.install.doc/GUID-F
 
 https://www.powershellgallery.com/packages/CredentialManager/2.0
 - vCenter and Guest Default Credentials are mandatory, please use the auxiliar script  ".\Manage-ReipCred.ps1" to create it.
-- If you have VMs running CentoS/RHEL (5-6). Run this code inside each vm before replicating it. This command will prevent the NIC from being renamed after a failover (because of MAC address change):
+- If you have VMs running CentOs/RHEL (5-6). It is necessary run this code inside each vm before replicating it. This command will prevent the NIC from being renamed after a failover (because of MAC address change):
 ```bash
 sudo ln -s /dev/null /etc/udev/rules.d/75-persistent-net-generator.rules
 sudo rm -f /etc/udev/rules.d/70-persistent-net.rules

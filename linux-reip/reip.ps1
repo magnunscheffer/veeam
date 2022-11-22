@@ -52,6 +52,51 @@ function New-NetMask {
   Return [String]::Join('.', $DottedIP)
 }
 
+function New-Prefix {
+  param (
+    [Parameter(Mandatory=$true)]
+    [string]$IpAddress
+  )   
+  $result = 0; 
+  # ensure we have a valid IP address
+  [IPAddress] $ip = $IpAddress
+  $octets = $ip.IPAddressToString.Split('.');
+  foreach($octet in $octets)
+  {
+    while(0 -ne $octet) 
+    {
+      $octet = ($octet -shl 1) -band [byte]::MaxValue
+      $result++; 
+    }
+  }
+  return $result;
+}
+function New-VmIpMask {
+  param (
+    [Parameter(Mandatory=$true)]
+    [string]$IpAddress,
+    [Parameter(Mandatory=$true)]
+    [int]$Prefix
+  )    
+  Switch ($Prefix)
+  {
+    {$_ -le 8} 
+    {    
+      $IpMask = ($($IpAddress).Split(".")[0] -join ".") + ".*.*.*" 
+    }        
+    {($_ -ge 9) -and ($_ -le 16)} 
+    {
+      $IpMask = ($($IpAddress).Split(".")[0..1] -join ".") + ".*.*"
+    }  
+    default
+    {
+      $IpMask = ($($IpAddress).Split(".")[0..2] -join ".") + ".*"
+    }
+  }
+  return $IpMask
+}
+
+
 #Convert the PlainText PW and User to a Credential.
 $vi_pwd = ConvertTo-SecureString $v_pwd -AsPlainText -Force
 $vi_cred = New-Object System.Management.Automation.PSCredential -ArgumentList $vi_usr, $vi_pwd
@@ -109,7 +154,15 @@ If ($FPlan.Platform -eq "VMWare")
         $VMGuest | Out-File -FilePath $LogName -Append      
         Write-Output "Waiting for Guest IP to be published..." | Out-File -FilePath $LogName -Append                          
       }
-            
+        
+      #locating re-ip rule for this VM
+      #$VMName = "Rep-RHEL"
+      $ReplicaVM = Get-VBRJob -WarningAction SilentlyContinue | Where-Object {$_.JobType -eq "Replica"} | Get-VBRJobObject -Name $VM.Item.Name
+      $ReIp= Get-VBRJob -WarningAction SilentlyContinue | ? {$_.Uid -like $ReplicaVM[0].JobId.Guid} | Get-VBRViReplicaReIpRule
+      #$VMIpMask = New-VmIpMask -IpAddress "10.10.1.50" -Prefix 32
+      $VMIpMask =  New-VmIpMask -IpAddress $VMGuest.Net.IpConfig.IpAddress[0].IpAddress -Prefix $VMGuest.Net.IpConfig.IpAddress[0].PrefixLength
+      $ReIPRule = $ReIp | Where-Object {$_.SourceIp -eq $VMIpMask} 
+      
       #Defining network parameters.
       $ProfileUsed = $ProfileList | Where-Object {$_.ProfileName -eq $($VM.Item.Name)} 
       $ProfileUsed | Out-File -FilePath $LogName -Append      
@@ -123,24 +176,27 @@ If ($FPlan.Platform -eq "VMWare")
 
       #Creating IP data for replacing at config file
       #Creating the New Mask
-      $NewIpMask = $ProfileUsed.AddressMask.Trim().Replace(".x","")
-      $NewIpMask | Out-File -FilePath $LogName -Append      
+      $NewIp = $ReIPRule.TargetIp.Trim().Replace(".*","")
+      $NewIp | Out-File -FilePath $LogName -Append      
       #Creating the Old Mask
-      $DotCount = ($NewIpMask.ToCharArray() | Where-Object {$_ -eq '.'} | Measure-Object).Count
-      $OldIpMask = $($VMGuest.Net.IpConfig.IpAddress[0].IpAddress).Split(".")[0..$DotCount] -join "."
-      $OldIpMask | Out-File -FilePath $LogName -Append      
+      $DotCount = ($NewIp.ToCharArray() | Where-Object {$_ -eq '.'} | Measure-Object).Count
+      $ReplacedIp = $($VMGuest.Net.IpConfig.IpAddress[0].IpAddress).Split(".")[0..$DotCount] -join "."
+      $ReplacedIp | Out-File -FilePath $LogName -Append      
       #Creating the old Mask
-      $OldMask = New-NetMask -Prefix $VMGuest.Net.IpConfig.IpAddress[0].PrefixLength
-      $OldMask | Out-File -FilePath $LogName -Append      
+      $ReplacedMask = New-NetMask -Prefix $VMGuest.Net.IpConfig.IpAddress[0].PrefixLength
+      $ReplacedMask | Out-File -FilePath $LogName -Append      
       #Creating the new Mask
-      $NewMask = New-NetMask -Prefix $ProfileUsed.Prefix.Trim()
+      $NewMask = $ReIPRule.TargetMask
       $NewMask | Out-File -FilePath $LogName -Append      
       #Geting old gateway info
-      $OldGateway=$VMGuest.ipstack.iprouteconfig.iproute.gateway.ipaddress | where-object {$_ -ne $null}
-      $OldGateway | Out-File -FilePath $LogName -Append      
+      $ReplacedGateway=$VMGuest.ipstack.iprouteconfig.iproute.gateway.ipaddress | where-object {$_ -ne $null}
+      $ReplacedGateway | Out-File -FilePath $LogName -Append      
       #Geting new gateway info
-      $NewGateway=$ProfileUsed.Gateway.Trim() 
-      $NewGateway | Out-File -FilePath $LogName -Append      
+      $NewGateway= $ReIPRule.TargetGateway.Trim() 
+      $NewGateway | Out-File -FilePath $LogName -Append     
+      #Creating a new prefix
+      $NewPrefix = New-Prefix -IpAddress $ReIPRule.TargetMask
+      $NewPrefix | Out-File -FilePath $LogName -Append    
 
       #Creating the guest credential
       $guest_pwd = ConvertTo-SecureString $($ProfileUsed.'guest-pwd-file'.Trim()) -AsPlainText -Force
@@ -170,10 +226,10 @@ If ($FPlan.Platform -eq "VMWare")
 
       #Creating new network configuration
       $NewNetConfig= @"
-sed -i `"s/IPADDR=$($OldIpMask)/IPADDR=$($NewIpMask)/`" $($ifcfg_path)
-sed -i `"s/GATEWAY=$($OldGateway)/GATEWAY=$($NewGateway)/`" $($ifcfg_path)
-sed -i `"s/NETMASK=$($OldMask)/NETMASK=$($NewMask)/`" $($ifcfg_path)
-sed -i `"s/PREFIX=$($VMGuest.Net.IpConfig.IpAddress[0].PrefixLength)/PREFIX=$($ProfileUsed.Prefix.Trim())/`" $($ifcfg_path)
+sed -i `"s/IPADDR=$($ReplacedIp)/IPADDR=$($NewIp)/`" $($ifcfg_path)
+sed -i `"s/NETMASK=$($ReplacedMask)/NETMASK=$($NewMask)/`" $($ifcfg_path)
+sed -i `"s/GATEWAY=$($ReplacedGateway)/GATEWAY=$($NewGateway)/`" $($ifcfg_path)
+sed -i `"s/PREFIX=$($VMGuest.Net.IpConfig.IpAddress[0].PrefixLength)/PREFIX=$($NewPrefix)/`" $($ifcfg_path)
 systemctl restart network
 "@
       #Get VM From vCenter
@@ -218,6 +274,3 @@ else
 write-output "Finished re-ip process at: $(Get-Date)" | Out-File -FilePath $LogName -Append
 $LogNewName = $LogPath+"Log_"+$FPlan.Name.Trim()+"_"+$logtime+".log"
 Rename-Item -Path $LogName -NewName $LogNewName -Force
-
-#$VM = Get-VBRJob -WarningAction SilentlyContinue | Where-Object {$_.JobType -eq "Replica"} | Get-VBRJobObject -Name Rep-RHEL
-#$ReIp= Get-VBRJob -WarningAction SilentlyContinue | ? {$_.Uid -like $VM.JobId.Guid} | Get-VBRViReplicaReIpRule

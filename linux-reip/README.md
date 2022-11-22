@@ -12,7 +12,7 @@ https://docs.vmware.com/en/VMware-vSphere/7.0/com.vmware.esxi.install.doc/GUID-F
 - CredentialManager module installed in VBR (Necessary to save credentials in Windows Credential Manager), for more information:
 
 https://www.powershellgallery.com/packages/CredentialManager/2.0
-- vCenter and Guest Default Credentials are mandatory, please use the auxiliar script  "./Manage-ReipCred.ps1"
+- vCenter and Guest Default Credentials are mandatory, please use the auxiliar script  "./Manage-ReipCred.ps1" to create it.
 
 ## Step by Step:
 - Install VMWare Powercli on VBR Server:

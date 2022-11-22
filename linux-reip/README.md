@@ -29,10 +29,24 @@ Install-Module VMware.PowerCLI -Scope AllUsers -SkipPublisherCheck -Force
 Install-Module -Name CredentialManager -Force
 ```
 
-- Creating the credentials: _"vCenter"_ and _"Default"_ (Used by Guest VMs).
-  - Download the csv file _"creds.csv"_ and place it in the same directory as the _"reip.ps1"_ script. This csv will be used to load the first credentials for the Windows Vault (Credential Manager). After that, the csv content will be cleaned up, to prevent passwords from being exposed. Whenever you need to add or remove credentials, just populate the csv again and the credentials will be created in the next script run.
-  - CSV download link: 
-
+## Creating the credentials: _"vCenter"_ and _"Default"_ (Used by Guest VMs).
+  - Some important informations:
+    - Download the csv file _"creds.csv"_ and place it in the same directory as the _"reip.ps1"_ script. 
+    - This csv will be used to load the first credentials for the Windows Vault (Credential Manager). After that, the csv content will be cleaned up, to prevent passwords from being exposed. 
+    - Whenever you need to add or remove credentials, just populate the csv again and the credentials will be created in the next script run.
+    - CSV download link: https://raw.githubusercontent.com/magnunscheffer/veeam/main/linux-reip/creds.csv
+  ### Creating default credentials example:
+    - Fill out the csv like the example, change only the columns _Username_ and _Password_:
+  
+    ![alt text](https://github.com/magnunscheffer/veeam/blob/main/linux-reip/csv-example.PNG?raw=true)
+  ### Creating default credentials with aditionals credentials example:    
+  - If you need to create additional credentials for guest VMs (Example: VMs with another username or password), follow the example below:
+  
+    ![alt text](https://github.com/magnunscheffer/veeam/blob/main/linux-reip/csv-example-plus.PNG?raw=true)      
+  
+    > Note: The profile name must be exactly the name of the VMware VM (replica source). If the script has a custom credential for the VM, the "Default" credential will be ignored.
+    
+    
 - Create additional credentials for VMs that do not use the default credential, in this case it is mandatory to inform the VM name through the parameter "-ItemName".
 
 - Set the parameters in the reip.ps1:

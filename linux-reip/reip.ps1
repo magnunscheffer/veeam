@@ -109,13 +109,13 @@ function New-VmIpMask {
   return $IpMask
 }
 
-#importing profiles configuration
+#Formating log file name
 $logtime = (Get-Date -Format "ddMMyyyy_HHmmss")
 $LogName = $Path +"Log_"+$logtime+".log"
 
 write-output "Starting re-ip process at: $(Get-Date)" | Out-File -FilePath $LogName 
 
-
+#Loading Credentials to Windows Credential Manager
 $CredList = Import-Csv -Path $credfile -Delimiter ";"
 ForEach ($Cred in $CredList) 
 {

@@ -30,7 +30,7 @@ Install-Module -Name CredentialManager -Force
 .\Manage-ReipCred.ps1 -Action Add -Type v -Username administrator@vsphere.local -Password P@ssw0rd!
 ```
 
-- Create a Default Guest credential to the reip script interact with the VMwar VIX on Guests Operational Systems (Invoke-VMScript).
+- Create a Default Guest credential to the reip script interact with the VMware VIX on Guests Operational Systems (Invoke-VMScript).
 ```powershell
 .\Manage-ReipCred.ps1 -Action Add -Type d -Username root -Password P@ssw0rd!
 ```

@@ -7,9 +7,10 @@ Use of this script is at your own risk.
 ## Requirements for this script:
 - VMware PowerCli Module installed in VBR for more information: 
 https://docs.vmware.com/en/VMware-vSphere/7.0/com.vmware.esxi.install.doc/GUID -F02D0C2D-B226-4908-9E5C-2E783D41FE2D.html
--CredentialManager module installed in VBR (Necessary to save credentials in Windows vault) more details at:
+
+- CredentialManager module installed in VBR (Necessary to save credentials in Windows vault) more details at:
 https://www.powershellgallery.com/packages/CredentialManager/2.0
--vCenter and Guest Default Credentials are mandatory, please use the auxiliar script  "./Manage-ReipCred.ps1"
+- vCenter and Guest Default Credentials are mandatory, please use the auxiliar script  "./Manage-ReipCred.ps1"
 
 ## Step by Step:
 -Install VMWare Powercli on VBR Server:

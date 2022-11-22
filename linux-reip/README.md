@@ -18,7 +18,8 @@ https://www.powershellgallery.com/packages/CredentialManager/2.0
 sudo ln -s /dev/null /etc/udev/rules.d/75-persistent-net-generator.rules
 sudo rm -f /etc/udev/rules.d/70-persistent-net.rules
 ```
-## Installing the requirements, Step by Step:
+#Step by Step:
+## Installing the requirements: 
 - Install VMWare Powercli on VBR Server:
 ```powershell
 Install-Module VMware.PowerCLI -Scope AllUsers -SkipPublisherCheck -Force
@@ -29,7 +30,7 @@ Install-Module VMware.PowerCLI -Scope AllUsers -SkipPublisherCheck -Force
 Install-Module -Name CredentialManager -Force
 ```
 
-## Creating the credentials.
+## Creating the credentials:
   - Some important informations before start:
     - This script needs some credentials to interact with vCenter and Guest OS Linux, we are using Windows Credential Manager (Windows Vault) to store these credentials. If you prefer to use another way to store the credentials. Just remember to change the references inside the script.
     - This csv will be used to load the first credentials for the Windows Vault (Credential Manager). After that, the csv content will be cleaned up, to prevent passwords from being exposed.

@@ -29,8 +29,9 @@ Install-Module VMware.PowerCLI -Scope AllUsers -SkipPublisherCheck -Force
 Install-Module -Name CredentialManager -Force
 ```
 
-## Creating the credentials: _"vCenter"_ and _"Default"_ (Used by Guest VMs).
+## Creating the credentials.
   - Some important informations before start:
+    - This script needs some credentials to interact with vCenter and Guest OS Linux, we are using Windows Credential Manager (Windows Vault) to store these credentials. If you prefer to use another way to store the credentials. Just remember to change the references inside the script.
     - This csv will be used to load the first credentials for the Windows Vault (Credential Manager). After that, the csv content will be cleaned up, to prevent passwords from being exposed.
     - Download the csv file _"creds.csv"_ and place it in the same directory as the _"reip.ps1"_ script, download link: https://raw.githubusercontent.com/magnunscheffer/veeam/main/linux-reip/creds.csv. 
     - Whenever you need to add or remove credentials, just populate the csv again and the credentials will be created in the next script run.

@@ -25,7 +25,7 @@ Install-Module VMware.PowerCLI -Scope AllUsers -SkipPublisherCheck -Force
 Install-Module -Name CredentialManager -Force
 ```
 
-- Create a vCenter Credential to the reip script interact with vCenter
+- Create a vCenter Credential to the reip script interact with vCenter and collect necessary data like (VM State, Ip Address and so on).
 ```powershell
 .\Manage-ReipCred.ps1 -Action Add -Type v -Username administrator@vsphere.local -Password P@ssw0rd!
 ```
@@ -35,7 +35,7 @@ Install-Module -Name CredentialManager -Force
 .\Manage-ReipCred.ps1 -Action Add -Type d -Username root -Password P@ssw0rd!
 ```
 
-- Create adicional customs credentials to specific VMs with not use the default guest credential.
+- Create additional credentials for VMs that do not use the default credential, in this case it is mandatory to inform the VM name through the parameter "-ItemName".
 ```powershell
 .\Manage-ReipCred.ps1 -Action Add -Type c -Username root -Password P@ssw0rd! -ItemName DR-VM2 #VMware VM Name
 ```

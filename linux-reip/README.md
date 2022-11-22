@@ -45,4 +45,4 @@ $LogPath = This script generate a log for troubleshooting proprose, so set the p
 -Associate this script (reip.ps1) with yours Failover Plans OP:
 Explanation: The script will automatically discover the Failover Plan and VMs associated with this FP, if there are Windows VMs they will be ignored (because it is natively supported by Veeam)
 
-![alt text](https://github.com/magnunscheffer/veeam/blob/main/hrc/download-example.png?raw=true)
+![alt text](https://github.com/magnunscheffer/veeam/blob/main/linux-reip/failoverplan-example.png?raw=true)

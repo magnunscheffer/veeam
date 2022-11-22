@@ -40,7 +40,7 @@ Install-Module -Name CredentialManager -Force
 .\Manage-ReipCred.ps1 -Action Add -Type c -Username root -Password P@ssw0rd! -ItemName DR-VM2 #VMware VM Name
 ```
 
-- Ajust the parameters in the reip.ps1:
+- Set the parameters in the reip.ps1:
   - $vi_srv = The vCenter FQDN, _Example: "vcenter.domain.local"_
   - $rep_sufix  = Suffix used in replica jobs, _Example: "\_replica"_
   - $LogPath = This script generate a log for troubleshooting proprose, so set the path for this logs, _Example: "C:\logs\"._

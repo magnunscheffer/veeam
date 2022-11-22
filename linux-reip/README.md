@@ -12,7 +12,7 @@ https://docs.vmware.com/en/VMware-vSphere/7.0/com.vmware.esxi.install.doc/GUID-F
 - CredentialManager Powershell module installed in VBR (to interact with Windows 'Credential Manager'), for more information:
 
 https://www.powershellgallery.com/packages/CredentialManager/2.0
-- "vCenter" and "Default" Credentials are mandatory, please read the step by step guide to know how to configure that.
+- _"vCenter"_ and _"Default"_ Credentials are mandatory, please read the step by step guide to know how to configure that.
 - If you have VMs running CentOs/RHEL (5-6). It is necessary run this code inside each vm before replicating it. This command will prevent the NIC from being renamed after a failover (because of MAC address change):
 ```bash
 sudo ln -s /dev/null /etc/udev/rules.d/75-persistent-net-generator.rules
@@ -30,7 +30,7 @@ Install-Module -Name CredentialManager -Force
 ```
 
 - Create vCenter and Default Guest Credential:
-  - Download the csv file "creds.csv" and place it in the same directory as the script "reip.ps1". This csv will be used to load the first credentials for the Windows vault (Credential Manager).
+  - Download the csv file _"creds.csv"_ and place it in the same directory as the _"reip.ps1"_ script. This csv will be used to load the first credentials for the Windows Vault (Credential Manager). After that, the csv content will be cleaned up, to prevent passwords from being exposed. Whenever you need to add or remove credentials, just populate the csv again and the credentials will be created in the next script run.
   - CSV download link: 
 
 - Create additional credentials for VMs that do not use the default credential, in this case it is mandatory to inform the VM name through the parameter "-ItemName".

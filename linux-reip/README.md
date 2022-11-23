@@ -53,7 +53,7 @@ To delete a credential from Windows Credential Manager just fillout like this:
   > Note: The action must be **Delete** instead of **Add**. _Username_ and _Password_ are not required.
   
 
-## Parameters configurations:
+## Configuring the script Parameters:
 - Set the parameters in the reip.ps1:
   - $vi_srv = The vCenter FQDN, _Example: "vcenter.domain.local"_
   - $rep_sufix  = Suffix used in replica jobs, _Example:  "\_replica"_

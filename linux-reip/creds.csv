@@ -1,3 +1,3 @@
 Profile;Username;Password;Action
-Default;root;Veeam123!;Add
-vCenter;Administrator@vsphere.local;Veeam123!;Add
+Default;root;P@ssw0rd!;Add
+vCenter;Administrator@vsphere.local;P@ssw0rd!;Add

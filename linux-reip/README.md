@@ -64,4 +64,5 @@ To delete a credential from Windows Credential Manager just fillout like this:
 ![alt text](https://github.com/magnunscheffer/veeam/blob/main/linux-reip/failoverplan-example.png?raw=true)
 
 > Note: How it Works: 
+> 
 > The script will automatically discover the Failover Plan and VMs associated with this FP, if there are Windows VMs they will be ignored. 

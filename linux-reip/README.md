@@ -26,31 +26,31 @@ Install-Module -Name CredentialManager -Force
 ```
 
 ## Managing Credentials:
-  - Some important informations before start:
-    - This script needs some credentials to interact with vCenter and Guest OS Linux, we are using Windows Credential Manager (Windows Vault) to store these credentials. If you prefer to use another way to store the credentials. Just remember to change the references inside the script.
-    - This csv will be used to load the credentials for the Windows Vault (Credential Manager). After that, the csv content will be cleaned up to prevent passwords from being exposed.
-    - Download the csv file _"creds.csv"_ [here](https://raw.githubusercontent.com/magnunscheffer/veeam/main/linux-reip/creds.csv) and place it in the same directory as the _"reip.ps1"_ script. 
-    - Whenever you need to add or remove credentials, just populate the csv again and the credentials will be created in the next script run.
+Some important informations before start:
+  - This script needs some credentials to interact with vCenter and Guest OS Linux, we are using Windows Credential Manager (Windows Vault) to store these credentials. If you prefer to use another way to store the credentials. Just remember to change the references inside the script.
+  - This csv will be used to load the credentials for the Windows Vault (Credential Manager). After that, the csv content will be cleaned up to prevent passwords from being exposed.
+  - Download the csv file _"creds.csv"_ [here](https://raw.githubusercontent.com/magnunscheffer/veeam/main/linux-reip/creds.csv) and place it in the same directory as the _"reip.ps1"_ script. 
+  - Whenever you need to add or remove credentials, just populate the csv again and the credentials will be created in the next script run.
 
-  ### Creating Default/vCenter credentials example:
+### Creating Default/vCenter credentials example:
   
-  Fill out the csv like the example, change only the columns _Username_ and _Password_ :
+Fill out the csv like the example, change only the columns _Username_ and _Password_ :
   
-  ![alt text](https://github.com/magnunscheffer/veeam/blob/main/linux-reip/csv-example.PNG?raw=true)
+![alt text](https://github.com/magnunscheffer/veeam/blob/main/linux-reip/csv-example.PNG?raw=true)
   
-  ### Creating default credentials with aditionals credentials example:    
-  If you need to create additional credentials for guest VMs (Example: VMs with another username or password), follow the example below:
+### Creating default credentials with aditionals credentials example:    
+If you need to create additional credentials for guest VMs (Example: VMs with another username or password), follow the example below:
   
-  ![alt text](https://github.com/magnunscheffer/veeam/blob/main/linux-reip/csv-example-plus.PNG?raw=true)      
+![alt text](https://github.com/magnunscheffer/veeam/blob/main/linux-reip/csv-example-plus.PNG?raw=true)      
   
-  > Note: The **Profile** name must be exactly the name of the VMware VM (source VM). If the script has a custom credential for the VM, the *"Default"* credential will be ignored.
+> Note: The **Profile** name must be exactly the name of the VMware VM (source VM). If the script has a custom credential for the VM, the *"Default"* credential will be ignored.
         
 ### Delete a Credential:
 To delete a credential from Windows Credential Manager just fillout like this:
 
 ![alt text](https://github.com/magnunscheffer/veeam/blob/main/linux-reip/csv-example-delete.PNG?raw=true)  
 
-  > Note: The action must be **Delete** instead of **Add**. _Username_ and _Password_ are not required.
+> Note: The action must be **Delete** instead of **Add**. _Username_ and _Password_ are not required.
   
 
 ## Configuring the script Parameters:

@@ -45,7 +45,8 @@ Install-Module -Name CredentialManager -Force
   
   > Note: The **Profile** name must be exactly the name of the VMware VM (source VM). If the script has a custom credential for the VM, the *"Default"* credential will be ignored.
         
-### To delete a credential from Windows Credential Manager just fillout like this:
+### Delete a Credential:
+To delete a credential from Windows Credential Manager just fillout like this:
 
 ![alt text](https://github.com/magnunscheffer/veeam/blob/main/linux-reip/csv-example-delete.PNG?raw=true)  
 

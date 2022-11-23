@@ -6,7 +6,7 @@ Use of this script is at your own risk.
 
 ## Requirements for this script:
 - VMware PowerCli Module installed in VBR, for more information [click here.](https://docs.vmware.com/en/VMware-vSphere/7.0/com.vmware.esxi.install.doc/GUID-F02D0C2D-B226-4908-9E5C-2E783D41FE2D.html):
-- CredentialManager Powershell module installed in VBR (to interact with Windows 'Credential Manager'), for more information [click here.](https://www.powershellgallery.com/packages/CredentialManager/2.0)
+- CredentialManager Powershell module installed in VBR _(Used to interact with Windows 'Credential Manager')_, for more information [click here.](https://www.powershellgallery.com/packages/CredentialManager/2.0)
 - _"vCenter"_ and _"Default"_ credentials are mandatory!. Please read the Step by Step guide >> [Managing Credentials.](https://github.com/magnunscheffer/veeam/blob/main/linux-reip/README.md#creating-defaultvcenter-credentials-example) 
 - If you have VMs running CentOs/RHEL (5-6). It is necessary run this code inside each vm before replicating it. This command will prevent the NIC from being renamed after a failover (because of MAC address change):
 ```bash

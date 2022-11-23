@@ -1,13 +1,12 @@
 <#
 .Requirements 
-- Veeam Powershell Module
-- Vmware PowerCli 12 or above 
-- Veeam Running with a service account with permissions at vCenter.
+- Visit https://github.com/magnunscheffer/veeam/tree/main/linux-reip#requirements-for-this-script
 
 .DESCRIPTION
- This script search for VM in DR PLan and re-ip linux VMs only, skiping windows VMs. 
+ This script search for VM in DR PLan and re-ip linux VMs only.
 .EXAMPLE 
- Put this script on "pre-script" session at Replication Job. (Job Settings --> Advanced --> Scripts --> Pre-Script)
+ Put this script on "Post-failover" session at Failover Plan Job. For more detailed instructions visit:
+ https://github.com/magnunscheffer/veeam/tree/main/linux-reip#requirements-for-this-script
 
 .NOTES
   Version:        1.0
@@ -32,6 +31,7 @@ param(
   [string]$credfile = $Path + "creds.csv"
 )
 
+#Function to mascared the VM Name inside Windows Credential Manager
 Function Get-StringHash 
 { 
     param
@@ -50,6 +50,7 @@ Function Get-StringHash
   
     $StringBuilder.ToString() 
 }
+#Function to convert a prefix into a netmask.
 function New-NetMask {
   param (
     [Parameter(Mandatory=$true)]
@@ -65,6 +66,7 @@ function New-NetMask {
   Return [String]::Join('.', $DottedIP)
 }
 
+#Function to convert a netmask into a netmask.
 function New-Prefix {
   param (
     [Parameter(Mandatory=$true)]
@@ -84,6 +86,7 @@ function New-Prefix {
   }
   return $result;
 }
+#Function used to prepared sed command data.
 function New-VmIpMask {
   param (
     [Parameter(Mandatory=$true)]
@@ -149,13 +152,9 @@ $FPlan | Out-File -FilePath $LogName -Append
 $VMlist = $FPlan.FailoverPlanObject 
 $VMlist | Out-File -FilePath $LogName -Append
 
-If ($FPlan.Platform -eq "VMWare") 
+If ($FPlan.Platform -eq "VMWare") #Because hyper-v is not supported by the script.
 {
-  #Connecting to vCenter Server if is Vmware
-  #Convert the PlainText PW and User to a Credential.
-
-  cmdkey /list:(Get-StringHash -String "vCenter") #| Out-File -FilePath $LogName -Append
-
+  #Connecting to vCenter Server if is Vmware  
   $vi_cred = Get-StoredCredential -Target (Get-StringHash -String "vCenter")
   Connect-VIServer -Server $vi_srv -Credential $vi_cred -Force | Out-File -FilePath $LogName -Append
 
@@ -163,29 +162,36 @@ If ($FPlan.Platform -eq "VMWare")
   {
     Write-Output "-------------------------------------------------------------------------------------------------------------" | Out-File -FilePath $LogName -Append
     Write-Output "Is Linux VM ? $($VM.Item.GuestInfo.IsUnixBased)" | Out-File -FilePath $LogName -Append
+    #Testing if is a linux Windows VM:
     If ($VM.Item.GuestInfo.IsUnixBased -eq $false)
     {
       Write-Output "Skipping re-ip for Windows VM: $($VM.Item.Name)" | Out-File -FilePath $LogName -Append
       Write-Output "-------------------------------------------------------------------------------------------------------------" | Out-File -FilePath $LogName -Append      
     }
-    Else
+    Else #If Linux go ahead.
     {
       Write-Output "Starting re-ip process for LInuxVM: $($VM.Item.Name)" | Out-File -FilePath $LogName -Append      
-      #Mounting VM Replica Name
-      $VMName = $VM.Item.Name + $rep_sufix.Trim()
-      #$VMName = "Rep-RHEL" + $rep_sufix
+      #Creating VM Replica Name
+      $VMName = $VM.Item.Name + $rep_sufix.Trim()      
 
       #Geting information about VM from vcenter
       $VMGuest = Get-VM $VMName | Select-Object -ExpandProperty ExtensionData | Select-Object -ExpandProperty guest
       $VMGuest | Out-File -FilePath $LogName -Append      
 
       #Waiting for VM to be responsive (Guest IP is Visible)
+      $tentative = 1
       while (!$VMGuest.IpAddress) 
       {
         Start-Sleep -Seconds 10 
         $VMGuest = Get-VM $VMName  | Select-Object -ExpandProperty ExtensionData | Select-Object -ExpandProperty guest
         $VMGuest | Out-File -FilePath $LogName -Append      
-        Write-Output "Waiting for Guest IP to be published..." | Out-File -FilePath $LogName -Append                          
+        Write-Output "Waiting for Guest IP to be published..." | Out-File -FilePath $LogName -Append
+        $tentative++
+        if ($tentative -gt 50 ) 
+        {
+          Write-Output "Failed to re-ip VM $VMName" | Out-File -FilePath $LogName -Append
+          break
+        }
       }
         
       #locating re-ip rule for this VM
@@ -270,8 +276,9 @@ systemctl restart network
         }
         {$_ -like "*Ubuntu 20*"} 
         {
-          Write-Output "Guest OS: Ubuntu Family"
+          Write-Output "Guest OS: Ubuntu Family not implemented yet" | Out-File -FilePath $LogName -Append  
           $ifcfg_path = "/etc/netplan/config.yaml"
+          break
         }
       }
 
@@ -309,11 +316,13 @@ ping -c4 `$gw | grep -Po "[[:digit:]]+ *(?=%)"
   }
   Disconnect-VIServer -Server $vi_srv -Force -confirm:$false | Out-File -FilePath $LogName -Append
 }
-else 
+else #At this time only VMware is supported.
 {
   Write-Output "Platform $($FPTest.Platform) not supported" | Out-File -FilePath $LogName -Append
   break
 }
 write-output "Finished re-ip process at: $(Get-Date)" | Out-File -FilePath $LogName -Append
+
+#Renaming the log to a definitive name
 $LogNewName = $LogPath+"Log_"+$FPlan.Name.Trim()+"_"+$logtime+".log"
 Rename-Item -Path $LogName -NewName $LogNewName -Force

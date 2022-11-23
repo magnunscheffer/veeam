@@ -34,12 +34,12 @@ Install-Module -Name CredentialManager -Force
 
   ### Creating Default/vCenter credentials example:
   
-  - Fill out the csv like the example, change only the columns _Username_ and _Password_ :
+  Fill out the csv like the example, change only the columns _Username_ and _Password_ :
   
   ![alt text](https://github.com/magnunscheffer/veeam/blob/main/linux-reip/csv-example.PNG?raw=true)
   
   ### Creating default credentials with aditionals credentials example:    
-  - If you need to create additional credentials for guest VMs (Example: VMs with another username or password), follow the example below:
+  If you need to create additional credentials for guest VMs (Example: VMs with another username or password), follow the example below:
   
   ![alt text](https://github.com/magnunscheffer/veeam/blob/main/linux-reip/csv-example-plus.PNG?raw=true)      
   

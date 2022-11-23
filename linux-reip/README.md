@@ -36,19 +36,21 @@ Some important informations before start:
   
 Fill out the csv like the example, change only the columns _Username_ and _Password_ :
   
-![alt text](https://github.com/magnunscheffer/veeam/blob/main/linux-reip/csv-example.PNG?raw=true)
+![alt text](https://github.com/magnunscheffer/veeam/blob/main/linux-reip/img/csv-example.PNG?raw=true)
+
+
   
 ### Creating Credentials with adtional guest credentials:    
 If you need to create additional credentials for guest VMs (Example: VMs with another username or password), follow the example below:
   
-![alt text](https://github.com/magnunscheffer/veeam/blob/main/linux-reip/csv-example-plus.PNG?raw=true)      
+![alt text](https://github.com/magnunscheffer/veeam/blob/main/linux-reip/img/csv-example-plus.PNG?raw=true)      
   
 > Note: The **Profile** name must be exactly the name of the VMware VM (source VM). If the script has a custom credential for the VM, the *"Default"* credential will be ignored.
         
 ### Delete a Credential:
 To delete a credential from Windows Credential Manager just fillout like this:
 
-![alt text](https://github.com/magnunscheffer/veeam/blob/main/linux-reip/csv-example-delete.PNG?raw=true)  
+![alt text](https://github.com/magnunscheffer/veeam/blob/main/linux-reip/img/csv-example-delete.PNG?raw=true)  
 
 > Note: The action must be **Delete** instead of **Add**. _Username_ and _Password_ are not required.
   
@@ -61,7 +63,7 @@ To delete a credential from Windows Credential Manager just fillout like this:
 
 ## Associating this script "reip.ps1" with yours Failover Plans (Post Failover Script):
 
-![alt text](https://github.com/magnunscheffer/veeam/blob/main/linux-reip/failoverplan-example.png?raw=true)
+![alt text](https://github.com/magnunscheffer/veeam/blob/main/linux-reip/img/failoverplan-example.png?raw=true)
 
 > Note: How it Works: 
 > 

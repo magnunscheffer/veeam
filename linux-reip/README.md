@@ -38,7 +38,7 @@ Fill out the csv like the example, change only the columns _Username_ and _Passw
   
 ![alt text](https://github.com/magnunscheffer/veeam/blob/main/linux-reip/csv-example.PNG?raw=true)
   
-### Creating default credentials with aditionals credentials example:    
+### Creating Credentials with adtional guest credentials:    
 If you need to create additional credentials for guest VMs (Example: VMs with another username or password), follow the example below:
   
 ![alt text](https://github.com/magnunscheffer/veeam/blob/main/linux-reip/csv-example-plus.PNG?raw=true)      
@@ -59,7 +59,7 @@ To delete a credential from Windows Credential Manager just fillout like this:
   - $rep_sufix  = Suffix used in replica jobs, _Example:  "\_replica"_
   - $LogPath = This script generate a log for troubleshooting, so set the path for this log, _Example: "C:\logs\"._
 
-- Associate this script "reip.ps1" with yours Failover Plans (Post Failover Script) :
+## Associate this script "reip.ps1" with yours Failover Plans (Post Failover Script) :
 
 _Explanation: The script will automatically discover the Failover Plan and VMs associated with this FP, if there are Windows VMs they will be ignored (because it is natively supported by Veeam)._
 

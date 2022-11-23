@@ -43,11 +43,14 @@ Install-Module -Name CredentialManager -Force
   
   ![alt text](https://github.com/magnunscheffer/veeam/blob/main/linux-reip/csv-example-plus.PNG?raw=true)      
   
-  > Note: The profile name must be exactly the name of the VMware VM (replica source). If the script has a custom credential for the VM, the "Default" credential will be ignored.
+  > Note: The **Profile** name must be exactly the name of the VMware VM (source VM). If the script has a custom credential for the VM, the *"Default"* credential will be ignored.
         
 ### To delete a credential from Windows Credential Manager just fillout like this:
 
 ![alt text](https://github.com/magnunscheffer/veeam/blob/main/linux-reip/csv-example-delete.PNG?raw=true)  
+
+  > Note: The action must be **Delete** instead of **Add**. _Username_ and _Password_ are not required.
+  
 
 ## Parameters configurations:
 - Set the parameters in the reip.ps1:

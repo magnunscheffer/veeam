@@ -5,13 +5,8 @@ The reip.ps1 script was created to allow re-ip of linux VMs, which is currently 
 Use of this script is at your own risk.
 
 ## Requirements for this script:
-- VMware PowerCli Module installed in VBR, for more information:
-
-https://docs.vmware.com/en/VMware-vSphere/7.0/com.vmware.esxi.install.doc/GUID-F02D0C2D-B226-4908-9E5C-2E783D41FE2D.html
-
-- CredentialManager Powershell module installed in VBR (to interact with Windows 'Credential Manager'), for more information:
-
-https://www.powershellgallery.com/packages/CredentialManager/2.0
+- VMware PowerCli Module installed in VBR, for more information [click here.](https://docs.vmware.com/en/VMware-vSphere/7.0/com.vmware.esxi.install.doc/GUID-F02D0C2D-B226-4908-9E5C-2E783D41FE2D.html):
+- CredentialManager Powershell module installed in VBR (to interact with Windows 'Credential Manager'), for more information [click here.](https://www.powershellgallery.com/packages/CredentialManager/2.0)
 - _"vCenter"_ and _"Default"_ credentials are mandatory!. Please read the Step by Step guide >> [Managing Credentials.](https://github.com/magnunscheffer/veeam/blob/main/linux-reip/README.md#creating-defaultvcenter-credentials-example) 
 - If you have VMs running CentOs/RHEL (5-6). It is necessary run this code inside each vm before replicating it. This command will prevent the NIC from being renamed after a failover (because of MAC address change):
 ```bash
@@ -34,7 +29,7 @@ Install-Module -Name CredentialManager -Force
   - Some important informations before start:
     - This script needs some credentials to interact with vCenter and Guest OS Linux, we are using Windows Credential Manager (Windows Vault) to store these credentials. If you prefer to use another way to store the credentials. Just remember to change the references inside the script.
     - This csv will be used to load the first credentials for the Windows Vault (Credential Manager). After that, the csv content will be cleaned up, to prevent passwords from being exposed.
-    - Download the csv file _"creds.csv"_ and place it in the same directory as the _"reip.ps1"_ script, download link: https://raw.githubusercontent.com/magnunscheffer/veeam/main/linux-reip/creds.csv. 
+    - Download the csv file _"creds.csv"_ [here](https://raw.githubusercontent.com/magnunscheffer/veeam/main/linux-reip/creds.csv) and place it in the same directory as the _"reip.ps1"_ script. 
     - Whenever you need to add or remove credentials, just populate the csv again and the credentials will be created in the next script run.
 
   ### Creating Default/vCenter credentials example:

@@ -9,7 +9,7 @@
  https://github.com/magnunscheffer/veeam/tree/main/linux-reip#requirements-for-this-script
 
 .NOTES
-  Version:        1.1 >> Added support for Ubuntu and improved looping.  
+  Version:        1.2 >> Added support for Debian, Suse[12-15].
   Author:         Magnun Scheffer
   Contact Info: mfs_@outlook.com
   Creation Date:  21/11/2022

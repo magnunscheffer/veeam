@@ -9,7 +9,7 @@
  https://github.com/magnunscheffer/veeam/tree/main/linux-reip#requirements-for-this-script
 
 .NOTES
-  Version:        1.1 >> Adding support for Ubuntu and improve the loop.  
+  Version:        1.1 >> Added support for Ubuntu and improved looping.  
   Author:         Magnun Scheffer
   Contact Info: mfs_@outlook.com
   Creation Date:  21/11/2022

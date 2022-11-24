@@ -4,7 +4,16 @@ The [reip.ps1](https://github.com/magnunscheffer/veeam/blob/main/linux-reip/reip
 
 Use of this script is at your own risk.
 
+## OS guest list that should work
+- Centos [5-8]
+- RedHat [5-8]
+- Oracle Linux [5-8]
+- Ubuntu 
+- Debian
+- Suse Linux [12-15]
+
 ## Requirements for this script:
+- Guest VM needs to have VMware Tools installed
 - VMware PowerCli Module installed in VBR, for more information [click here.](https://docs.vmware.com/en/VMware-vSphere/7.0/com.vmware.esxi.install.doc/GUID-F02D0C2D-B226-4908-9E5C-2E783D41FE2D.html):
 - CredentialManager Powershell module installed in VBR _(Used to interact with Windows 'Credential Manager')_, for more information [click here.](https://www.powershellgallery.com/packages/CredentialManager/2.0)
 - _"vCenter"_ and _"Default"_ credentials are mandatory!. Please read the Step by Step guide >> [Managing Credentials.](https://github.com/magnunscheffer/veeam/blob/main/linux-reip/README.md#creating-defaultvcenter-credentials-example) 

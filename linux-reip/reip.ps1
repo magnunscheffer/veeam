@@ -126,8 +126,7 @@ $LogName = $Path + $FpId.Trim()+"_"+$logtime+".log"
 write-output "Starting re-ip process at: $(Get-Date)" | Out-File -FilePath $LogName 
 Write-Output "Process ID: $parentPid"  | Out-File -FilePath $LogName -Append
 Write-Output "Process ID: $parentCmd.Trim()" | Out-File -FilePath $LogName -Append
-Write-Output "Tentatives: $GetIpTentatives" | Out-File -FilePath $LogName -Append
-Write-Output "Credentials List:" | Out-File -FilePath $LogName -Append
+Write-Output "Nº of Get IP Tentatives: $GetIpTentatives" | Out-File -FilePath $LogName -Append
 cmdkey /list | Out-File -FilePath $LogName -Append
 
 #Getting information about Failover Plan
@@ -136,7 +135,7 @@ Write-Output "Failover Plan:"  | Out-File -FilePath $LogName -Append
 $FPlan | Out-File -FilePath $LogName -Append
 
 #Loading Credentials to Windows Credential Manager
-$CredList = Import-Csv -Path $credfile -Delimiter ";"  #| Out-File -FilePath $LogName -Append 
+$CredList = Import-Csv -Path $credfile -Delimiter ";"  | Out-File -FilePath $LogName -Append 
 Write-Output "Creds to Manage"  | Out-File -FilePath $LogName -Append
 $CredList | Out-File -FilePath $LogName -Append 
 
@@ -148,7 +147,7 @@ If ($CredList)
     $CredId =Get-StringHash -String $Cred.Profile
     If ($Cred.Action -eq "Add") 
     {    
-      New-StoredCredential -Target $($CredId) -UserName $($Cred.Username) -Password $($Cred.Password) -Persist LocalMachine | Out-File -FilePath $LogName -Append       
+      New-StoredCredential -Target $($CredId) -UserName $($Cred.Username) -Password $($Cred.Password) -Persist LocalMachine #| Out-File -FilePath $LogName -Append  #Atention: Can expose the passwords on log, enable only for troubleshooting.   
     }  
     If ($Cred.Action -eq "Delete") 
     {
@@ -202,44 +201,40 @@ If ($FPlan.Platform -eq "VMWare") #Because hyper-v is not supported by the scrip
       
       #Identifying the Guest OS because some distro are not supported.
       #Clear variables before loop
-      Clear-Variable NicName -Scope Global
-      Clear-Variable GuestSupported -Scope Global
+      Clear-Variable NicName -Scope Global      
       Clear-Variable GuestOSFamily -Scope Global
       #$VMGuest.GuestFullName = "CentOS 6"
       Switch ($VMGuest.GuestFullName)
       {
         {($_ -like "*CentOs 5*") -or ($_ -like "*RedHat 5*") -or ($_ -like "*CentOs 6*") -or ($_ -like "*RedHat 6*")} 
-        {
-          $GuestSupported = $true
+        {          
           $GuestOSFamily= "RH1"
           Write-Output "Guest OS Family: [RH1] CentOS/RHEL [5-6]" | Out-File -FilePath $LogName -Append      
         }        
         {($_ -like "*CentOs 7*") -or ($_ -like "*CentOs 8*") -or ($_ -like "*RedHat 7*") -or ($_ -like "*RedHat 8*")} 
         {
-          $GuestSupported = $true
           $GuestOSFamily= "RH2"
           Write-Output "Guest OS Family: [RH2] CentOS/RHEL [7+]" | Out-File -FilePath $LogName -Append      
         }
         {($_ -like "*Ubuntu Linux*") -or ($_ -like "*Debian*")} #Tested with 20.04 using netplan if you have older distro, maybe ajustments can be necessary.
         {
-          $GuestSupported = $true
-          $GuestOSFamily= "UB"
-          Write-Output "Guest OS Family: [UB] Ubuntu" | Out-File -FilePath $LogName -Append  
+          $GuestOSFamily= "UBDB"
+          Write-Output "Guest OS Family: [UBDB] Ubuntu" | Out-File -FilePath $LogName -Append  
+        }
+        {($_ -like "*SUSE Linux Enterprise 12*") -or ($_ -like "*SUSE Linux Enterprise 13*") -or ($_ -like "*SUSE Linux Enterprise 14*") -or ($_ -like "*SUSE Linux Enterprise 15*")}  #Tested from SLES12 until SLES15
+        {
+          $GuestOSFamily= "SLES"
+          Write-Output "Guest OS Family: [SLES] Suse Linux [12-15]" | Out-File -FilePath $LogName -Append  
         }
         default
         {
-          $GuestSupported = $false
-          Write-Output "This Distro $($VMGuest.GuestFullName) is not supported by the script yet"  | Out-File -FilePath $LogName -Append                        
+          #Guest not supported by the script jump to the next VM inside the loop
+          Write-Output "Error: This Distro $($VMGuest.GuestFullName) is not supported by the script yet"  | Out-File -FilePath $LogName -Append
+          Write-Output "[GNST]---------------------------------------------------------------------------------------------------------|" | Out-File -FilePath $LogName -Append
+          $VmError+= @($VMName) 
+          Write-Output "Errors:$($VmError.count)" | Out-File -FilePath $LogName -Append                     
+          continue
         }
-      }
-
-      #If Guest is not supported by the script jump to the next VM inside the loop
-      Write-Output "Guest is supported by the Script: $($GuestSupported)" | Out-File -FilePath $LogName -Append 
-      if (!$GuestSupported) {
-        Write-Output "[GNST]---------------------------------------------------------------------------------------------------------|" | Out-File -FilePath $LogName -Append
-        $VmError+= @($VMName) 
-        Write-Output "Errors:$($VmError.count)" | Out-File -FilePath $LogName -Append                     
-        continue
       }
       
       #Waiting for VM to be responsive (Guest IP is Visible)
@@ -280,7 +275,16 @@ If ($FPlan.Platform -eq "VMWare") #Because hyper-v is not supported by the scrip
           
       #Converting VM-IP into VM-IP-Masking like [10.10.1.100/24 to 10.10.1.*]
       $VMIpMask =  New-VmIpMask -IpAddress $VMGuest.Net.IpConfig.IpAddress[0].IpAddress -Prefix $VMGuest.Net.IpConfig.IpAddress[0].PrefixLength
-      $ReIPRule = $ReIp | Where-Object {$_.SourceIp -eq $VMIpMask}       
+      $ReIPRule = $ReIp | Where-Object {$_.SourceIp -eq $VMIpMask} 
+      
+      IF (!$ReIPRule) 
+      {
+        Write-Output "Error: Re-IP Rule compatible with source network '$VMIpMask' not found:" | Out-File -FilePath $LogName -Append
+        Write-Output "[FGRI]---------------------------------------------------------------------------------------------------------|" | Out-File -FilePath $LogName -Append
+        $VmError+= @($VMName) 
+        Write-Output "Errors:$($VmError.count)" | Out-File -FilePath $LogName -Append              
+        continue
+      }      
       Write-Output "Selected ReIP:" | Out-File -FilePath $LogName -Append
       $ReIPRule | Out-File -FilePath $LogName -Append      
       
@@ -363,16 +367,40 @@ sed -i "s/PREFIX=$($ReplacedPrefix)/PREFIX=$($NewPrefix)/" $($ifcfg_path)
 $($ServiceCmd)
 "@
         }        
-        "UB"
+        "UBDB"
         {
-          $ifcfg_path = "/etc/netplan/*.yaml"
-          $routecmd="ip route | grep default | awk '{print `$3;}'"
+          $Netplan = ($Vi_Vm | Invoke-VMScript -ScriptText "if which netplan >/dev/null; then echo yes; else echo no; fi" -GuestCredential $Guest_Cred).ScriptOutput.Trim()  
           $ClearPw= [System.Runtime.InteropServices.Marshal]::PtrToStringAuto([System.Runtime.InteropServices.Marshal]::SecureStringToBSTR($Guest_Cred.Password))
-          $NewNetConfig = @"
+          If($Netplan -eq "yes")
+          {
+            $ifcfg_path = "/etc/netplan/*.yaml"
+            $routecmd="ip route | grep default | awk '{print `$3;}'"
+            $NewNetConfig = @"
 export HISTIGNORE='*sudo -S*'
 echo $ClearPw | sudo -S sed -i "s,- $($ReplacedIp)/$($ReplacedPrefix),- $($NewIp)/$($NewPrefix)," $($ifcfg_path)
 echo $ClearPw | sudo -S sed -i "s,gateway4: $($ReplacedGateway),gateway4: $($NewGateway)," $($ifcfg_path)
 echo $ClearPw | sudo -S netplan apply --debug
+unset HISTIGNORE
+"@ 
+          }
+          else
+          {
+            #todo
+          }
+        }
+        "SLES"
+        {
+          $NicName = ($Vi_Vm | Invoke-VMScript -ScriptText "ls /sys/class/net | grep -v lo -m 1" -GuestCredential $Guest_Cred).ScriptOutput.Trim()  
+          $ifcfg_path= "/etc/sysconfig/network/ifcfg-$($NicName)"
+          $routecmd="ip route | grep default | awk '{print `$3;}'"
+          $ClearPw= [System.Runtime.InteropServices.Marshal]::PtrToStringAuto([System.Runtime.InteropServices.Marshal]::SecureStringToBSTR($Guest_Cred.Password))
+          $NewNetConfig = @"
+export HISTIGNORE='*sudo -S*'
+echo $ClearPw | sudo -S sed -i "s,$($ReplacedIp),$($NewIp)," $($ifcfg_path)
+echo $ClearPw | sudo -S sed -i "s,NETMASK='$($ReplacedMask)',NETMASK='$($NewMask)'," $($ifcfg_path)
+echo $ClearPw | sudo -S sed -i "s,/$($ReplacedPrefix),/$($NewPrefix)," $($ifcfg_path)
+echo $ClearPw | sudo -S sed -i "s,default $($ReplacedGateway),default $($NewGateway)," /etc/sysconfig/network/ifroute-$NicName 
+echo $ClearPw | sudo -S systemctl restart network
 unset HISTIGNORE
 "@ 
         }

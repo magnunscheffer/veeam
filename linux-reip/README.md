@@ -64,7 +64,7 @@ To delete a credential from Windows Credential Manager just fillout like this:
 
 ## Associating this script "reip.ps1" with yours Failover Plans (Post Failover Script):
 
-![alt text](https://github.com/magnunscheffer/veeam/blob/main/linux-reip/img/Re-IP.png?raw=true)
+![alt text](https://github.com/magnunscheffer/veeam/blob/main/linux-reip/img/failoverplan-example.png?raw=true)
 
 > Note: How it Works: 
 > 
@@ -73,4 +73,4 @@ To delete a credential from Windows Credential Manager just fillout like this:
 ## Script Logic Summary:
 
 
-![alt text](https://github.com/magnunscheffer/veeam/blob/main/linux-reip/img/re-ip.png?raw=true)
+![alt text](https://github.com/magnunscheffer/veeam/blob/main/linux-reip/img/Re-IP.png?raw=true)

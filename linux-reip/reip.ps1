@@ -206,12 +206,12 @@ If ($FPlan.Platform -eq "VMWare") #Because hyper-v is not supported by the scrip
       #$VMGuest.GuestFullName = "CentOS 6"
       Switch ($VMGuest.GuestFullName)
       {
-        {($_ -like "*CentOs 5*") -or ($_ -like "*RedHat 5*") -or ($_ -like "*CentOs 6*") -or ($_ -like "*RedHat 6*")} 
+        {($_ -like "*CentOs 5*") -or ($_ -like "*RedHat 5*") -or ($_ -like "*CentOs 6*") -or ($_ -like "*RedHat 6*") -or ($_ -like "*Oracle Linux 6*")} 
         {          
           $GuestOSFamily= "RH1"
           Write-Output "Guest OS Family: [RH1] CentOS/RHEL [5-6]" | Out-File -FilePath $LogName -Append      
         }        
-        {($_ -like "*CentOs 7*") -or ($_ -like "*CentOs 8*") -or ($_ -like "*RedHat 7*") -or ($_ -like "*RedHat 8*")} 
+        {($_ -like "*CentOs 7*") -or ($_ -like "*CentOs 8*") -or ($_ -like "*RedHat 7*") -or ($_ -like "*RedHat 8*") -or ($_ -like "*Oracle Linux 7*") -or ($_ -like "*Oracle Linux 8*")} 
         {
           $GuestOSFamily= "RH2"
           Write-Output "Guest OS Family: [RH2] CentOS/RHEL [7+]" | Out-File -FilePath $LogName -Append      

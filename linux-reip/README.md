@@ -59,7 +59,7 @@ To delete a credential from Windows Credential Manager just fillout like this:
 - Set the parameters in the reip.ps1:
   - $vi_srv = The vCenter FQDN, _Example: "vcenter.domain.local"_
   - $GetIPTentatives = Number of tentatives to get Guest IP Address from VMware, _Example: **3**_
-  - $Path = By default the path (for logs and csv) is the directory of the script itself. if you wish you can change to another directory, _Example: "C:\logs\"._
+  - $Path = By default the path (for logs and csv) is the directory of the script itself. if you wish you can change to another directory.
   - $credfile = Name of the credentials CSV file. By default is _"creds.csv").
 
 ## Associating this script "reip.ps1" with yours Failover Plans (Post Failover Script):

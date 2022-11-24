@@ -1,6 +1,6 @@
 # Linux Re-Ip Script
 
-The [reip.ps1](https://github.com/magnunscheffer/veeam/blob/main/linux-reip/reip.ps1) script was created to allow re-ip of linux VMs, which is currently not supported by Veeam.
+The [reip.ps1](https://github.com/magnunscheffer/veeam/blob/main/linux-reip/reip.ps1) script was created to allow re-ip of linux VMs, which are currently not supported by Veeam.
 
 Use of this script is at your own risk.
 

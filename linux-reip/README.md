@@ -1,6 +1,6 @@
 # Linux Re-Ip Script
 
-The reip.ps1 script was created to allow re-ip of linux VMs, which is currently not supported by Veeam.
+The [reip.ps1](https://github.com/magnunscheffer/veeam/blob/main/linux-reip/reip.ps1) script was created to allow re-ip of linux VMs, which are currently not supported by Veeam.
 
 Use of this script is at your own risk.
 
@@ -58,8 +58,9 @@ To delete a credential from Windows Credential Manager just fillout like this:
 ## Configuring the script Parameters:
 - Set the parameters in the reip.ps1:
   - $vi_srv = The vCenter FQDN, _Example: "vcenter.domain.local"_
-  - $rep_sufix  = Suffix used in replica jobs, _Example:  "\_replica"_
-  - $LogPath = This script generate a log for troubleshooting, so set the path for this log, _Example: "C:\logs\"._
+  - $GetIPTentatives = Number of tentatives to get Guest IP Address from VMware, _Example: **3**_
+  - $Path = By default the path (for logs and csv) is the directory of the script itself. if you wish you can change to another directory.
+  - $credfile = Name of the credentials CSV file. By default is _"creds.csv").
 
 ## Associating this script "reip.ps1" with yours Failover Plans (Post Failover Script):
 

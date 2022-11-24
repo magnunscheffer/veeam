@@ -4,7 +4,7 @@ The [reip.ps1](https://github.com/magnunscheffer/veeam/blob/main/linux-reip/reip
 
 Use of this script is at your own risk.
 
-## OS guest list that should work
+## OS Guest list that should work
 - Centos [5-8]
 - RedHat [5-8]
 - Oracle Linux [5-8]

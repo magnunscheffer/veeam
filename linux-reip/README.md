@@ -70,5 +70,7 @@ To delete a credential from Windows Credential Manager just fillout like this:
 > 
 > The script will automatically discover the Failover Plan and VMs associated with this FP, if there are Windows VMs they will be ignored. 
 
-## Script Logic Summary
+## Script Logic Summary:
+
+
 ![alt text](https://github.com/magnunscheffer/veeam/blob/main/linux-reip/img/re-ip.png?raw=true)

@@ -347,61 +347,93 @@ If ($FPlan.Platform -eq "VMWare") #Because hyper-v is not supported by the scrip
          #ls /sys/class/net | grep -v lo 
         {"RH1" -or "RH2"}
         {
+          #Getting NIC name from guest..Ex: Ethx or ENSxxx
           $NicName = ($Vi_Vm | Invoke-VMScript -ScriptText "ls /sys/class/net | grep -v lo -m 1" -GuestCredential $Guest_Cred).ScriptOutput.Trim()  
+          #Mounting the NIC file path
           $ifcfg_path= "/etc/sysconfig/network-scripts/ifcfg-$($NicName)"
           if ($GuestOSFamily -eq "RH1") 
           {
             $RouteCmd="route -n | grep UG | awk '{print `$2;}'"
             $ServiceCmd="service network restart" 
           }
-          else {
+          else 
+          {
             $RouteCmd="ip route | grep default | awk '{print `$3;}'"
             $ServiceCmd="systemctl restart network"  
           }
           #Creating new network configuration
           $NewNetConfig = @"
-sed -i "s/IPADDR=$($ReplacedIp)/IPADDR=$($NewIp)/" $($ifcfg_path)
-sed -i "s/NETMASK=$($ReplacedMask)/NETMASK=$($NewMask)/" $($ifcfg_path)
-sed -i "s/GATEWAY=$($ReplacedGateway)/GATEWAY=$($NewGateway)/" $($ifcfg_path)
-sed -i "s/PREFIX=$($ReplacedPrefix)/PREFIX=$($NewPrefix)/" $($ifcfg_path)
-$($ServiceCmd)
+          sed -i "s/IPADDR=$($ReplacedIp)/IPADDR=$($NewIp)/" $($ifcfg_path)
+          sed -i "s/NETMASK=$($ReplacedMask)/NETMASK=$($NewMask)/" $($ifcfg_path)
+          sed -i "s/GATEWAY=$($ReplacedGateway)/GATEWAY=$($NewGateway)/" $($ifcfg_path)
+          sed -i "s/PREFIX=$($ReplacedPrefix)/PREFIX=$($NewPrefix)/" $($ifcfg_path)
+          $($ServiceCmd)
 "@
         }        
         "UBDB"
         {
+          #Getting info abount netplan
           $Netplan = ($Vi_Vm | Invoke-VMScript -ScriptText "if which netplan >/dev/null; then echo yes; else echo no; fi" -GuestCredential $Guest_Cred).ScriptOutput.Trim()  
+          #Converting password to use with SUDO
           $ClearPw= [System.Runtime.InteropServices.Marshal]::PtrToStringAuto([System.Runtime.InteropServices.Marshal]::SecureStringToBSTR($Guest_Cred.Password))
+          #New Ubuntu using Netplan
           If($Netplan -eq "yes")
           {
-            $ifcfg_path = "/etc/netplan/*.yaml"
+            $ifcfg_path = "/etc/netplan/*.yaml"            
             $routecmd="ip route | grep default | awk '{print `$3;}'"
             $NewNetConfig = @"
-export HISTIGNORE='*sudo -S*'
-echo $ClearPw | sudo -S sed -i "s,- $($ReplacedIp)/$($ReplacedPrefix),- $($NewIp)/$($NewPrefix)," $($ifcfg_path)
-echo $ClearPw | sudo -S sed -i "s,gateway4: $($ReplacedGateway),gateway4: $($NewGateway)," $($ifcfg_path)
-echo $ClearPw | sudo -S netplan apply --debug
-unset HISTIGNORE
+            export HISTIGNORE='*sudo -S*'
+            echo $ClearPw | sudo -S sed -i "s,- $($ReplacedIp)/$($ReplacedPrefix),- $($NewIp)/$($NewPrefix)," $($ifcfg_path)
+            echo $ClearPw | sudo -S sed -i "s,gateway4: $($ReplacedGateway),gateway4: $($NewGateway)," $($ifcfg_path)
+            echo $ClearPw | sudo -S netplan apply --debug
+            unset HISTIGNORE
 "@ 
           }
-          else
+          else #Debian and Old Ubuntu distros
           {
-            #todo
+            #Nic Config file path
+            $ifcfg_path = "/etc/network/interfaces"
+            #Getting route command line:
+            $IpRoute = ($Netplan = ($Vi_Vm | Invoke-VMScript -ScriptText "if which ip >/dev/null; then echo yes; else echo no; fi" -GuestCredential $Guest_Cred).ScriptOutput.Trim()  ) 
+            if ($IpRoute -eq "yes")  #New distros          
+            {
+              $routecmd="ip route | grep default | awk '{print `$3;}'"
+              $ServiceCmd="systemctl restart networking.service"
+                
+            }
+            else  #Old Distros
+            {              
+              $RouteCmd="route -n | grep UG | awk '{print `$2;}'"
+              $ServiceCmd = "service networking stop; sleep 5; service networking start"
+            }
+            #ReIP Command
+            $NewNetConfig = @"            
+            sed -i "s,address $($ReplacedIp),address $($NewIp)," $($ifcfg_path)
+            sed -i "s,netmask $($ReplacedMask),netmask $($NewMask)," $($ifcfg_path)
+            sed -i "s,gateway $($ReplacedGateway),gateway $($NewGateway)," $($ifcfg_path)
+            $ServiceCmd            
+"@
           }
         }
         "SLES"
         {
-          $NicName = ($Vi_Vm | Invoke-VMScript -ScriptText "ls /sys/class/net | grep -v lo -m 1" -GuestCredential $Guest_Cred).ScriptOutput.Trim()  
+          #Getting NIC name from guest..Ex: Ethx or ENSxxx
+          $NicName = ($Vi_Vm | Invoke-VMScript -ScriptText "ls /sys/class/net | grep -v lo -m 1" -GuestCredential $Guest_Cred).ScriptOutput.Trim() 
+          #Mounting the NIC file path 
           $ifcfg_path= "/etc/sysconfig/network/ifcfg-$($NicName)"
-          $routecmd="ip route | grep default | awk '{print `$3;}'"
+          #Route command line
+          $RouteCmd = "ip route | grep default | awk '{print `$3;}'"
+          #Converting password to use with SUDO
           $ClearPw= [System.Runtime.InteropServices.Marshal]::PtrToStringAuto([System.Runtime.InteropServices.Marshal]::SecureStringToBSTR($Guest_Cred.Password))
+          #ReIP Command
           $NewNetConfig = @"
-export HISTIGNORE='*sudo -S*'
-echo $ClearPw | sudo -S sed -i "s,$($ReplacedIp),$($NewIp)," $($ifcfg_path)
-echo $ClearPw | sudo -S sed -i "s,NETMASK='$($ReplacedMask)',NETMASK='$($NewMask)'," $($ifcfg_path)
-echo $ClearPw | sudo -S sed -i "s,/$($ReplacedPrefix),/$($NewPrefix)," $($ifcfg_path)
-echo $ClearPw | sudo -S sed -i "s,default $($ReplacedGateway),default $($NewGateway)," /etc/sysconfig/network/ifroute-$NicName 
-echo $ClearPw | sudo -S systemctl restart network
-unset HISTIGNORE
+          export HISTIGNORE='*sudo -S*'
+          echo $ClearPw | sudo -S sed -i "s,$($ReplacedIp),$($NewIp)," $($ifcfg_path)
+          echo $ClearPw | sudo -S sed -i "s,NETMASK='$($ReplacedMask)',NETMASK='$($NewMask)'," $($ifcfg_path)
+          echo $ClearPw | sudo -S sed -i "s,/$($ReplacedPrefix),/$($NewPrefix)," $($ifcfg_path)
+          echo $ClearPw | sudo -S sed -i "s,default $($ReplacedGateway),default $($NewGateway)," /etc/sysconfig/network/ifroute-$NicName 
+          echo $ClearPw | sudo -S systemctl restart network
+          unset HISTIGNORE
 "@ 
         }
         Default

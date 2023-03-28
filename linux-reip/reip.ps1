@@ -126,7 +126,7 @@ $LogName = $Path + $FpId.Trim()+"_"+$logtime+".log"
 write-output "Starting re-ip process at: $(Get-Date)" | Out-File -FilePath $LogName 
 Write-Output "Process ID: $parentPid"  | Out-File -FilePath $LogName -Append
 Write-Output "Process ID: $parentCmd.Trim()" | Out-File -FilePath $LogName -Append
-Write-Output "Nº of Get IP Tentatives: $GetIpTentatives" | Out-File -FilePath $LogName -Append
+Write-Output "Number of Get IP Tentatives: $GetIpTentatives" | Out-File -FilePath $LogName -Append
 cmdkey /list | Out-File -FilePath $LogName -Append
 
 #Getting information about Failover Plan
@@ -135,32 +135,44 @@ Write-Output "Failover Plan:"  | Out-File -FilePath $LogName -Append
 $FPlan | Out-File -FilePath $LogName -Append
 
 #Loading Credentials to Windows Credential Manager
-$CredList = Import-Csv -Path $credfile -Delimiter ";"  | Out-File -FilePath $LogName -Append 
-Write-Output "Creds to Manage"  | Out-File -FilePath $LogName -Append
-$CredList | Out-File -FilePath $LogName -Append 
+$CredList = Import-Csv -Path $credfile -Delimiter ";"  
+#Write-Output "Debug: Credentials to create/delete:"  | Out-File -FilePath $LogName -Append #Atention: Disable it if debugging is not necessary!!! (Password as clear text in log)
+#$CredList | Out-File -FilePath $LogName -Append #Atention: Disable it if debugging is not necessary!!! (Password as clear text in log)
 
 If ($CredList) 
 { 
+  Write-Output "Altering the Windows Credential Database ..."  | Out-File -FilePath $LogName -Append  
   ForEach ($Cred in $CredList) 
   {
     #masking the profile name
     $CredId =Get-StringHash -String $Cred.Profile
+    #Write-Output "Item: $($Cred.Profile)_$CredId"  | Out-File -FilePath $LogName -Append
     If ($Cred.Action -eq "Add") 
     {    
-      New-StoredCredential -Target $($CredId) -UserName $($Cred.Username) -Password $($Cred.Password) -Persist LocalMachine #| Out-File -FilePath $LogName -Append  #Atention: Can expose the passwords on log, enable only for troubleshooting.   
+      Write-Output "Adding User: $($Cred.Username)"  | Out-File -FilePath $LogName -Append
+      New-StoredCredential -Target $($CredId) -UserName $($Cred.Username) -Password $($Cred.Password) -Persist LocalMachine 
     }  
     If ($Cred.Action -eq "Delete") 
     {
       Remove-StoredCredential -Target $($CredId) | Out-File -FilePath $LogName -Append
+      Write-Output "Removing User: $($Cred.Username)"  | Out-File -FilePath $LogName -Append
     }
   }
+
   #Confidential information cleaning
+  $Permission = Get-Acl -Path $credfile
   remove-item -Force -Path $credfile -Confirm:$false | Out-File -FilePath $LogName -Append
   Add-Content -Path $credfile -Value 'Profile;Username;Password;Action' -Force | Out-File -FilePath $LogName -Append
+  $Permission | Set-Acl -Path $credfile
+}
+else 
+{
+  Write-Output "No credentials add/remove ..."  | Out-File -FilePath $LogName -Append  
 }
 
 #Getting information about VMs in Failover Plan
-Write-Output "VM List:"  | Out-File -FilePath $LogName -Append
+Write-Output "VM List to process:"  | Out-File -FilePath $LogName -Append
+Write-Output ""  | Out-File -FilePath $LogName -Append
 $VMlist = $FPlan.FailoverPlanObject 
 $VMlist | Out-File -FilePath $LogName -Append
 
@@ -169,10 +181,25 @@ If ($FPlan.Platform -eq "VMWare") #Because hyper-v is not supported by the scrip
   #Connecting to vCenter Server if is Vmware  
   $vi_cred = Get-StoredCredential -Target (Get-StringHash -String "vCenter")
   Write-Output "vCenter Credential:"  | Out-File -FilePath $LogName -Append
-  $vi_Cred | Out-File -FilePath $LogName -Append
+  $vi_cred | Out-File -FilePath $LogName -Append
   Write-Output "vCenter Connection:"  | Out-File -FilePath $LogName -Append
-  Connect-VIServer -Server $vi_srv -Credential $vi_cred -Force | Out-File -FilePath $LogName -Append
-  Foreach ($VM in $VMList) 
+  #Set-PowerCLIConfiguration -Scope User -ParticipateInCEIP $false -Confirm:$false | Out-File -FilePath $LogName -Append     
+  $password = ConvertTo-SecureString "Veeam123!" -AsPlainText -Force
+  $Credential = New-Object System.Management.Automation.PSCredential ("administrator@vsphere.local", $password)
+
+  try 
+  {
+    Connect-VIServer -Server $vi_srv -Credential $vi_cred -Force -ErrorAction Stop | Out-File -FilePath $LogName -Append    
+  }
+  catch 
+  {
+    $_.Exception.Message | Out-File -FilePath $LogName -Append 
+    Write-Output "Fatal Error: Failed to connect to $vi_srv, aborting re-ip rules process at: $(Get-Date)."  | Out-File -FilePath $LogName -Append
+    [Environment]::Exit(1) 
+    exit;
+  }   
+  
+  Foreach ($VM in $VMList)
   {
     #Finding the Replica Suffix
     $ReplicaVM = Get-VBRJob -WarningAction SilentlyContinue | Where-Object {$_.JobType -eq "Replica"} | Get-VBRJobObject -Name $VM.Item.Name    
@@ -188,7 +215,8 @@ If ($FPlan.Platform -eq "VMWare") #Because hyper-v is not supported by the scrip
     {
       #Skipping Windows VM
       Write-Output "Skipping re-ip for Windows VM: $($VMName)" | Out-File -FilePath $LogName -Append
-      Write-Output "[SVMW]---------------------------------------------------------------------------------------------------------|" | Out-File -FilePath $LogName -Append      
+      Write-Output "[SVMW]---------------------------------------------------------------------------------------------------------|" | Out-File -FilePath $LogName -Append  
+      Write-Output " " | Out-File -FilePath $LogName -Append    
       $VmSkipped+= @($VMName)
     }
     Else #If Linux go ahead.
@@ -196,15 +224,20 @@ If ($FPlan.Platform -eq "VMWare") #Because hyper-v is not supported by the scrip
       #Start Linux VM ReIP
       Write-Output "Starting re-ip process for LInuxVM: $($VMName)" | Out-File -FilePath $LogName -Append      
       
-      #Getting information about VM from vcenter
-      $VMGuest = Get-VM $VMName | Select-Object -ExpandProperty ExtensionData | Select-Object -ExpandProperty guest      
+      #Getting information about VM from vcenter 
+      Write-Output "Getting information about VM from vcenter:" | Out-File -FilePath $LogName -Append                
+      $VMConfigOS = Get-VM $VMName | Select-Object -ExpandProperty ExtensionData | Select-Object -ExpandProperty config
+      Write-Output "VMConfigOS Config:" | Out-File -FilePath $LogName -Append          
+      $VMConfigOS | Out-File -FilePath $LogName -Append   
       
       #Identifying the Guest OS because some distro are not supported.
       #Clear variables before loop
       Clear-Variable NicName -Scope Global      
       Clear-Variable GuestOSFamily -Scope Global
-      #$VMGuest.GuestFullName = "CentOS 6"
-      Switch ($VMGuest.GuestFullName)
+      
+      Write-Output "Guest OS Name:" | Out-File -FilePath $LogName -Append          
+      $VMConfigOS.GuestFullName | Out-File -FilePath $LogName -Append  
+      Switch ($VMConfigOS.GuestFullName)
       {
         {($_ -like "*CentOs 5*") -or ($_ -like "*RedHat 5*") -or ($_ -like "*CentOs 6*") -or ($_ -like "*RedHat 6*") -or ($_ -like "*Oracle Linux 6*")} 
         {          
@@ -226,18 +259,21 @@ If ($FPlan.Platform -eq "VMWare") #Because hyper-v is not supported by the scrip
           $GuestOSFamily= "SLES"
           Write-Output "Guest OS Family: [SLES] Suse Linux [12-15]" | Out-File -FilePath $LogName -Append  
         }
-        default
-        {
-          #Guest not supported by the script jump to the next VM inside the loop
-          Write-Output "Error: This Distro $($VMGuest.GuestFullName) is not supported by the script yet"  | Out-File -FilePath $LogName -Append
-          Write-Output "[GNST]---------------------------------------------------------------------------------------------------------|" | Out-File -FilePath $LogName -Append
-          $VmError+= @($VMName) 
-          Write-Output "Errors:$($VmError.count)" | Out-File -FilePath $LogName -Append                     
-          continue
-        }
       }
       
+      If (!$GuestOSFamily)
+      {
+        #Guest not supported by the script jump to the next VM inside the loop
+        Write-Output "Error: This Distro $($VMConfigOS.GuestFullName) is not supported by the script yet"  | Out-File -FilePath $LogName -Append
+        Write-Output "[GNST]---------------------------------------------------------------------------------------------------------|" | Out-File -FilePath $LogName -Append
+        Write-Output " " | Out-File -FilePath $LogName -Append
+        $VmError+= @($VMName) 
+        Write-Output "Errors:$($VmError.count)" | Out-File -FilePath $LogName -Append                           
+        continue;
+      }
+
       #Waiting for VM to be responsive (Guest IP is Visible)
+      $VMGuest = Get-VM $VMName  | Select-Object -ExpandProperty ExtensionData | Select-Object -ExpandProperty guest
       $i = 1 #tentative number ...
       while (!$VMGuest.IpAddress) 
       {
@@ -265,14 +301,18 @@ If ($FPlan.Platform -eq "VMWare") #Because hyper-v is not supported by the scrip
       IF ($FailedToGetIP) 
       {
         Write-Output "[FGIP]---------------------------------------------------------------------------------------------------------|" | Out-File -FilePath $LogName -Append
+        Write-Output " " | Out-File -FilePath $LogName -Append
         $VmError+= @($VMName) 
         Write-Output "Errors:$($VmError.count)" | Out-File -FilePath $LogName -Append              
         continue
       } 
       
       #Finding re-ip rule for this VM
-      $ReIp= Get-VBRJob -WarningAction SilentlyContinue | Where-Object {$_.Uid -like $ReplicaVM[0].JobId.Guid} | Get-VBRViReplicaReIpRule  
-          
+      $ReIp= Get-VBRJob -WarningAction SilentlyContinue | Where-Object {$_.Uid -like $ReplicaVM[0].JobId.Guid} | Get-VBRViReplicaReIpRule 
+      Write-Output "ReIP Rules found:" | Out-File -FilePath $LogName -Append
+      $ReIp | Out-File -FilePath $LogName -Append
+      Write-Output "Source VM IP to change:$($VMGuest.Net.IpConfig.IpAddress[0].IpAddress)" | Out-File -FilePath $LogName -Append
+      
       #Converting VM-IP into VM-IP-Masking like [10.10.1.100/24 to 10.10.1.*]
       $VMIpMask =  New-VmIpMask -IpAddress $VMGuest.Net.IpConfig.IpAddress[0].IpAddress -Prefix $VMGuest.Net.IpConfig.IpAddress[0].PrefixLength
       $ReIPRule = $ReIp | Where-Object {$_.SourceIp -eq $VMIpMask} 
@@ -281,11 +321,12 @@ If ($FPlan.Platform -eq "VMWare") #Because hyper-v is not supported by the scrip
       {
         Write-Output "Error: Re-IP Rule compatible with source network '$VMIpMask' not found:" | Out-File -FilePath $LogName -Append
         Write-Output "[FGRI]---------------------------------------------------------------------------------------------------------|" | Out-File -FilePath $LogName -Append
+        Write-Output " " | Out-File -FilePath $LogName -Append
         $VmError+= @($VMName) 
         Write-Output "Errors:$($VmError.count)" | Out-File -FilePath $LogName -Append              
         continue
       }      
-      Write-Output "Selected ReIP:" | Out-File -FilePath $LogName -Append
+      Write-Output "Selected ReIP Rule:" | Out-File -FilePath $LogName -Append
       $ReIPRule | Out-File -FilePath $LogName -Append      
       
       #Looking for a custom guest credential
@@ -464,6 +505,7 @@ ping -c4 `$gw | grep -Po "[[:digit:]]+ *(?=%)"
         { 
             Write-Output "Error: Re-IP failed, please check the VM config!" | Out-File -FilePath $LogName -Append
             Write-Output "[FRIP]---------------------------------------------------------------------------------------------------------|" | Out-File -FilePath $LogName -Append
+            Write-Output " " | Out-File -FilePath $LogName -Append
             $VmError+= @($VMName) 
             Write-Output "Errors:$($VmError.count)" | Out-File -FilePath $LogName -Append  
                                             
@@ -473,6 +515,7 @@ ping -c4 `$gw | grep -Po "[[:digit:]]+ *(?=%)"
           Write-Output  "Info: Successfully re-ip!" | Out-File -FilePath $LogName -Append
           $VmSuccessful+= @($VMName)
           Write-Output "[SRIP]---------------------------------------------------------------------------------------------------------|" | Out-File -FilePath $LogName -Append
+          Write-Output " " | Out-File -FilePath $LogName -Append
         } 
     }  
   }

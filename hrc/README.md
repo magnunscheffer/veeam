@@ -37,7 +37,7 @@ curl -OL --max-redirs 5 https://vee.am/hrc22 && mv hrc22 hr-check.sh  && chmod +
 
 ### Result Examples:
 Log file: https://raw.githubusercontent.com/magnunscheffer/veeam/main/hrc/Log-rep-09052023_151629.txt
-
+```bash
 -----------------------------------------------------------------------------------------------------------------------------------------------
 |This script is independently produced and has no direct link to Veeam Software. It just checks the recommendations related to the user guide |
 |article and Veeam Write Paper *Protect against Ransomware with Immutable Backups*:                                                           |
@@ -160,5 +160,6 @@ To                         Action      From
 6162/tcp                   ALLOW OUT   Anywhere                   # Veeam transport rule
 
 -------------------Finishing at Tue 09 May 2023 03:16:33 PM -03 ---------------
+```
 PrintScreen Example:
 ![alt text](https://github.com/magnunscheffer/veeam/blob/main/hrc/run-example1.png?raw=true)

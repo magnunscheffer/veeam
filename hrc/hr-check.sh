@@ -107,7 +107,7 @@ if [ "$svcuser" == "root" ]
 then
     output="
     Warning: Please do not use the 'root' user as a service account for the 'veeamtransport' service!
-    Use a user 'normal' user with temporary SUDO permissions for this.
+    Use a 'normal' user with temporary SUDO permissions for this.
 
     More details:	
     https://helpcenter.veeam.com/docs/backup/vsphere/hardened_repo_specify_server.html?ver=120
@@ -242,7 +242,7 @@ then
     echoI "$output" && echo -e "$output" >> $log	
    
 else 
-    output="\n    Warning: Is not recommend keep SSH service enabled in Veeam Hardened Repository!, please disable it!\n
+    output="\n    Warning: Is not recommended keep SSH service enabled in Veeam Hardened Repository!, please disable it!\n
     Service Status: $sshstatus\n	
 
     More details:

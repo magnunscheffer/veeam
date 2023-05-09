@@ -282,5 +282,6 @@ else
    echoW "$output" && echo -e "$output" >> $log
 fi
 
-output="-------------------Finishing at $(date) --------------- Log file: $(log)"
+logpath="$(pwd)/$log"
+output="-------------------Finishing at $(date) --------------- Log file:$logpath"
 echoD "$output" && echo -e "$output" >> $log

@@ -35,6 +35,7 @@ curl -OL --max-redirs 5 https://vee.am/hrc22 && mv hrc22 hr-check.sh  && chmod +
 
 -----------------------------------------------------------------
 
-### Result Example:
+### Result Examples:
+Log file: https://github.com/magnunscheffer/veeam/blob/main/hrc/Log-rep-09052023_151629.txt
 
 ![alt text](https://github.com/magnunscheffer/veeam/blob/main/hrc/run-example1.png?raw=true)

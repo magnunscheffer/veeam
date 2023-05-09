@@ -35,6 +35,8 @@ curl -OL --max-redirs 5 https://vee.am/hrc22 && mv hrc22 hr-check.sh  && chmod +
 
 -----------------------------------------------------------------
 > TIP: Use the VBR Files menu to download the log file from the hardened repository. // I assume ssh is disabled :)
+![alt text](https://github.com/magnunscheffer/veeam/blob/main/hrc/open-log-example.png?raw=true)
+
 
 ### Result Examples:
 Log file: https://raw.githubusercontent.com/magnunscheffer/veeam/main/hrc/Log-rep-09052023_151629.txt

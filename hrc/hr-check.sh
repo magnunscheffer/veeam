@@ -282,5 +282,5 @@ else
    echoW "$output" && echo -e "$output" >> $log
 fi
 
-output="-------------------Finishing at $(date) ---------------"
+output="-------------------Finishing at $(date) --------------- Log file: $(log)"
 echoD "$output" && echo -e "$output" >> $log

@@ -268,7 +268,7 @@ then
    All these firewall rules are removed automatically after the job finishes execution'\n"
    echoI "$output" && echo -e "$output" >> $log
    
-   output="Current firewall rules:\n
+   output="   Current firewall rules:\n
    --------------------------------------------------------------------------------\n"
    echoD "$output" && echo -e "$output" >> $log
    $fwconfig && $fwconfig >> $log

@@ -1,6 +1,9 @@
 # Forcing Tenant Job configs to be defined by Template Job for [EM. vSphere Self Portal](https://helpcenter.veeam.com/docs/backup/em/em_working_with_vsphere_portal.html?ver=120) 
 
-The [SelfJobEntMgr-ForceTemplateValues.ps1](https://github.com/magnunscheffer/veeam/blob/main/selfportalem-forcetemplate/SelfJobEntMgr-ForceTemplateValues.ps1) script is designed to force tenants to use a template job's settings, including [Retention+GFS, Advanced Storage Settings, and Scheduling Settings].
+Due to the limitations that exist on what you can restrict when creating Tenant Jobs. We created this script [SelfJobEntMgr-ForceTemplateValues.ps1](https://github.com/magnunscheffer/veeam/blob/main/selfportalem-forcetemplate/SelfJobEntMgr-ForceTemplateValues.ps1)] to force the application of the Job Options and also customize the scheduling.
+
+For example you need to force a retention or force a specific schedule for the Job. You can define these parameters in an example job [Template] and this script will apply these values in the Tenant job. Even if the user changes any value, in the next backup run the template values will be applied again.
+
 > Please note that this script will override settings made by the end user.
 ##### For more details about Tenant creation on EM, go to: [ Step 15-c](https://helpcenter.veeam.com/docs/backup/em/em_adding_tenant_accounts.html?ver=120) on EM User Guide.
 

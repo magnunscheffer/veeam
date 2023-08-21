@@ -37,4 +37,5 @@ C:\Scripts\SelfJobEntMgr-ForceTemplateValues.ps1  -TemplateName "Template_ForceS
 
 ![alt text](https://github.com/magnunscheffer/veeam/blob/main/selfportalem-forcetemplate/ScriptForcingTemplateSettings.png?raw=true)
 
-> if you needs to keek some atributes defined by the user, example "Backup Window"
+> If you need to keep some user-defined attributes in Options or Programming, use this script session to customize your needs.
+![alt text](https://github.com/magnunscheffer/veeam/blob/main/selfportalem-forcetemplate/PreserveSomeValues.png?raw=true)

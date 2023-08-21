@@ -17,7 +17,8 @@
   Contact Info: mfs_@outlook.com
   Creation Date:  21/08/2023
 
-This script can be attached to multiple replications jobs.
+This script can be attached to multiple Template/Tenant jobs.
+
 .PARAMETERS
 #>
 #Set Job Name to use as  template for the script

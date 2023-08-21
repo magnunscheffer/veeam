@@ -1,6 +1,6 @@
 ﻿<#
 .Requirements 
-- Visit https://github.com/magnunscheffer/veeam/tree/main/selfjob-entmgr#requirements-for-this-script
+- Visit https://github.com/magnunscheffer/veeam/blob/main/selfportalem-forcetemplate/README.md#requirements-for-this-script
 
 .DESCRIPTION
  This script will change the EM Self Service Portal tenant jobs  to force the use of predefined options/scheduling from a VBR template job [overriding user settings]. 
@@ -9,8 +9,7 @@
  Put this script on "Pre-Script" session on your Template Job and after that, use 'Copy from" Settings during the Tenant Creation. For more information access:
  https://helpcenter.veeam.com/docs/backup/em/em_adding_tenant_accounts.html?ver=120  (Step 15-c)
 
- Full guidance on: https://github.com/magnunscheffer/veeam/tree/main/selfportalem-forcetemplate
-
+ For complete guidance, visit: https://github.com/magnunscheffer/veeam/tree/main/selfportalem-forcetemplate
 
 .NOTES
   Version:        0.1 

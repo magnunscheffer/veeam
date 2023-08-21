@@ -2,7 +2,7 @@
 
 
 #Autor: Magnun Scheffer | Contact: mfs_@outlook.com
-#Version: 0.3
+#Version: 0.3.1
 #Download: 'curl -O https://raw.githubusercontent.com/magnunscheffer/veeam/main/hrc/hr-check.sh && chmod +x hr-check.sh'
 #Alternative: 'curl -OL --max-redirs 5 https://vee.am/hrc22 && mv hrc22 hr-check.sh  && chmod +x hr-check.sh'
 #Run: './hr-check.sh /mnt/repo01/backups'
@@ -265,11 +265,12 @@ then
    https://www.veeam.com/wp-guide-protect-ransomware-immutable-backups.html                                                    
    Reference: (Page 8): 'During installation, Veeam configures the Linux firewall and allows incoming traffic to port 6162. 
    Iptables rules for dynamic ports (2500–3300 per default) are configured automatically during the job run. 
-   All these firewall rules are removed automatically after the job finishes execution'\n
-
-   Current firewall rules:\n
-   --------------------------------------------------------------------------------\n"
+   All these firewall rules are removed automatically after the job finishes execution'\n"
    echoI "$output" && echo -e "$output" >> $log
+   
+   output="   Current firewall rules:\n
+   --------------------------------------------------------------------------------\n"
+   echoD "$output" && echo -e "$output" >> $log
    $fwconfig && $fwconfig >> $log
 else
    output="\n   Warning: Please enable Firewall and keep only veeam ports allowed [6162, 2500-3000]!

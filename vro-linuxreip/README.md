@@ -32,7 +32,7 @@ Install-Module VMware.PowerCLI -Scope AllUsers -SkipPublisherCheck -Force
 ## Managing Credentials:
 Its is necessary add vCenter and guests credencials to VRO, please visit the official guide if you don't have experience it this step:
 [Add VRO Credentials](https://helpcenter.veeam.com/docs/vro/userguide/adding_credentials_manually.html?ver=70)
-<img src="(https://helpcenter.veeam.com/docs/vro/userguide/images/add_creds.png" width="713" height="358">
+<img src="https://helpcenter.veeam.com/docs/vro/userguide/images/add_creds.png" width="713" height="358">
 - If you have more than one Linux Admin credential, repeat the process and place a reference in the Description Field to locate this credential in the next steps.
 
 ## Creating the Custom Script 

@@ -92,11 +92,4 @@ Parameters Examples:
 > Info: If you try to associate this script with a Windows VM, it will be ignored with a warning event:
 <img src="https://github.com/magnunscheffer/veeam/blob/main/vro-linuxreip/img/exec3.png?raw=true">
 
-Full detailed report example avaliable bellow:
-[embed]https://github.com/magnunscheffer/veeam/blob/main/vro-linuxreip/img/Report.pdf[/embed]
-
-
-
-
-
-
+Full detailed report example avaliable [here](https://github.com/magnunscheffer/veeam/blob/main/vro-linuxreip/img/Report.pdf)

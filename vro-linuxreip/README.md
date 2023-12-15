@@ -35,7 +35,7 @@ Its is necessary add vCenter and guests credencials to VRO, please visit the off
 
 <img src="https://helpcenter.veeam.com/docs/vro/userguide/images/add_creds.png" width="713" height="358">
 
-> Note: If you have more than one Linux Admin credential, repeat the process and place a reference in the Description Field to locate this credential in the next steps.
+> Note: If you have more than one Linux Admin credential, repeat the process each additional credencial.
 
 ## Creating the Custom Script 
 - Download the script from git hub, [download link](https://github.com/magnunscheffer/veeam/blob/main/vro-linuxreip/VRO-LinuxReIP.ps1)

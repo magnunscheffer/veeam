@@ -83,3 +83,10 @@ Parameters Examples:
 
 > If you have more than one Linux credential, remember to change this on each VM that is using a specific credential. More details [here](https://helpcenter.veeam.com/docs/vro/userguide/configuring_vms.html?ver=70).
 
+
+# Execution Example:
+
+<img src="https://github.com/magnunscheffer/veeam/blob/main/vro-linuxreip/img/Exec1.png?raw=true">
+<img src="https://github.com/magnunscheffer/veeam/blob/main/vro-linuxreip/img/Exec2.png?raw=true">
+
+

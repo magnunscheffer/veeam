@@ -86,7 +86,7 @@ Parameters Examples:
 
 # Execution Example:
 
-<img src="https://github.com/magnunscheffer/veeam/blob/main/vro-linuxreip/img/Exec1.png?raw=true">
-<img src="https://github.com/magnunscheffer/veeam/blob/main/vro-linuxreip/img/Exec2.png?raw=true">
+<img src="https://github.com/magnunscheffer/veeam/blob/main/vro-linuxreip/img/exec1.png?raw=true">
+<img src="https://github.com/magnunscheffer/veeam/blob/main/vro-linuxreip/img/exec2.png?raw=true">
 
 

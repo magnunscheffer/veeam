@@ -73,7 +73,7 @@ Its is necessary add vCenter and guests credencials to VRO, please visit the off
 ## Associating this script to yours Replica Plans
 > This script currently works only with Replica Plans. Use this script as a regular step on your Replica Plans, example:
 
-<img src="https://github.com/magnunscheffer/veeam/blob/main/vro-linuxreip/img/Plan.png?raw=true" width="1207" height="453">
+<img src="https://github.com/magnunscheffer/veeam/blob/main/vro-linuxreip/img/Plan.png?raw=true" width="979" height="768">
 
 > If you have more than one Linux credential, remember to change this on each VM that is using a specific credential. More details [here](https://helpcenter.veeam.com/docs/vro/userguide/configuring_vms.html?ver=70).
 

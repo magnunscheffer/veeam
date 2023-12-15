@@ -42,18 +42,23 @@ Its is necessary add vCenter and guests credencials to VRO, please visit the off
 - Go to Administration --> Plan Steps --> Add --> Put a Name for your custom step, ex: "LinuxReIP" and click Next.
 
 <img src="https://github.com/magnunscheffer/veeam/blob/main/vro-linuxreip/img/Step1.png?raw=true" width="628" height="525">
+
 - Load the script using the buttom browser --> Click Next
 
 <img src="https://github.com/magnunscheffer/veeam/blob/main/vro-linuxreip/img/Step2.png?raw=true" width="628" height="525">
+
 - On Scopes click Next and Summary screem click Finish to end the wizard.
 
 <img src="https://github.com/magnunscheffer/veeam/blob/main/vro-linuxreip/img/Step3.png?raw=true" width="628" height="525">
+
 - After this edit the script to add the mandatory parameters, select your script and click edit:
 
 <img src="https://github.com/magnunscheffer/veeam/blob/main/vro-linuxreip/img/Step4.png?raw=true" width="567" height="299">
+
 - Go to Parameters tab and first set the Execution Location to "Veeam Backup Server":
 
 <img src="https://github.com/magnunscheffer/veeam/blob/main/vro-linuxreip/img/Step5.png?raw=true" width="628" height="525">
+
 - Click "Add" and create all the parameters listed below:
 
   

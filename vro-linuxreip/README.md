@@ -1,6 +1,6 @@
 # Veeam Recovery Orchestrator Linux Re-Ip Script
 
-The [reip.ps1](https://github.com/magnunscheffer/veeam/blob/main/linux-reip/reip.ps1) script was created to allow re-ip of linux VMs, which are currently not supported by Veeam.
+The [VRO-LinuxReIP.ps1](https://github.com/magnunscheffer/veeam/blob/main/vro-linuxreip/VRO-LinuxReIP.ps1) script was created to allow re-ip of linux VMs during VRO Execution Plan, which are currently not supported by Veeam.
 
 Use of this script is at your own risk.
 
@@ -14,9 +14,9 @@ Use of this script is at your own risk.
 
 ## Requirements for this script:
 - Guest VM needs to have VMware Tools installed
-- VMware PowerCli Module installed in VBR, for more information [click here.](https://docs.vmware.com/en/VMware-vSphere/7.0/com.vmware.esxi.install.doc/GUID-F02D0C2D-B226-4908-9E5C-2E783D41FE2D.html):
-- CredentialManager Powershell module installed in VBR _(Used to interact with Windows 'Credential Manager')_, for more information [click here.](https://www.powershellgallery.com/packages/CredentialManager/2.0)
-- _"vCenter"_ and _"Default"_ credentials are mandatory!. Please read the Step by Step guide >> [Managing Credentials.](https://github.com/magnunscheffer/veeam/blob/main/linux-reip/README.md#creating-defaultvcenter-credentials-example) 
+- VMware PowerCli Module installed in VBR [Production], for more information [click here.](https://docs.vmware.com/en/VMware-vSphere/7.0/com.vmware.esxi.install.doc/GUID-F02D0C2D-B226-4908-9E5C-2E783D41FE2D.html):
+- A vCenter user with read and invoke-vmscript permission.
+- Root account for RHEL/CentOS/OEL and SUDO user for Ubuntu/Debian/Suse Linux, it is necessary to inject the new network configs inside of VM using [Invoke-VMScript](https://developer.vmware.com/docs/powercli/latest/vmware.vimautomation.core/commands/invoke-vmscript/#Default).
 - If you have VMs running CentOs/RHEL (5-6). It is necessary run this code inside each vm before replicating it. This command will prevent the NIC from being renamed after a failover (because of MAC address change):
 ```bash
 sudo ln -s /dev/null /etc/udev/rules.d/75-persistent-net-generator.rules
@@ -24,52 +24,39 @@ sudo rm -f /etc/udev/rules.d/70-persistent-net.rules
 ```
 # Step by Step:
 ## Installing the requirements: 
-- Install VMWare Powercli on VBR Server:
+- Install VMWare Powercli on VBR Server {Production Server / Not on VRO EMBEDDED VBR]:
 ```powershell
 Install-Module VMware.PowerCLI -Scope AllUsers -SkipPublisherCheck -Force
 ```
 
-- Install CredencialManager on VBR Server:
-```powershell
-Install-Module -Name CredentialManager -Force
-```
-
 ## Managing Credentials:
-Some important informations before start:
-  - This script needs some credentials to interact with vCenter and Guest OS Linux, we are using Windows Credential Manager (Windows Vault) to store these credentials. If you prefer to use another way to store the credentials. Just remember to change the references inside the script.
-  - This csv will be used to load the credentials for the Windows Vault (Credential Manager). After that, the csv content will be cleaned up to prevent passwords from being exposed.
-  - Download the csv file _"creds.csv"_ [here](https://raw.githubusercontent.com/magnunscheffer/veeam/main/linux-reip/creds.csv) and place it in the same directory as the _"reip.ps1"_ script. 
-  - Whenever you need to add or remove credentials, just populate the csv again and the credentials will be created in the next script run.
+Its is necessary add vCenter and guests credencials to VRO, please visit the official guide if you don't have experience it this step:
+[Add VRO Credentials](https://helpcenter.veeam.com/docs/vro/userguide/adding_credentials_manually.html?ver=70)
+![alt text](https://helpcenter.veeam.com/docs/vro/userguide/images/add_creds.png)  
+- If you have more than one Linux Admin credential, repeat the process and place a reference in the Description Field to locate this credential in the next steps.
 
-### Creating Default/vCenter credentials example:
+## Creating the Custom Script 
+- Download the script from git hub, [download link](https://github.com/magnunscheffer/veeam/blob/main/vro-linuxreip/VRO-LinuxReIP.ps1)
+- Go to Administration --> Plan Steps --> Add --> Put a Name for your custom step, ex: "LinuxReIP" and click Next.
+- Load the script using the buttom browser --> Click Next
+- On Scopes click Next and Summary screem click Finish to end the wizard.
+- After this edit the script to add the mandatory parameters, select your script and click edit:
+- Go to Parameters tab and Add the follow parameters:
   
-Fill out the csv like the example, change only the columns _Username_ and _Password_ :
-  
-![alt text](https://github.com/magnunscheffer/veeam/blob/main/linux-reip/img/csv-example.PNG?raw=true)
+| Name          | Type          | Default Value    | Description                                                                                  |
+| ------------- | ------------- | ---------------- | -------------------------------------------------------------------------------------------- |
+| VcenterCred   | Credentials   | vCenter Account  | Your vCenter account to connect to PowerCli.                                                 | 
+| VmCred        | Credentials   | Linux Root User  | Account to interact with linux VM and replace network configuration inside the Guest OS.     |
+| SourceVmName  | Text          | %source_vm_name% | This variable will get the source VM NAME from currently phase inside the plan.              |
+| SourceVmIp    | Text          | %source_vm_ip%   | This variable will get the source VM IP Address from currently phase inside the plan.        |
+| TargetVmName  | Text          | %target_vm_name% | This variable will get the Target (Replica)VM Name from currently phase inside the plan.     |
+| VCenterFQDN   | Text          | vCenter FQDN     | Put your vcenter FQDN to script connect during powercli execution.Ex: "vcenter.domain.local" |
+
+- Credential Example:
+- Variable Example:
+- FQDN Example:
 
 
-  
-### Creating Credentials with adtional guest credentials:    
-If you need to create additional credentials for guest VMs (Example: VMs with another username or password), follow the example below:
-  
-![alt text](https://github.com/magnunscheffer/veeam/blob/main/linux-reip/img/csv-example-plus.PNG?raw=true)      
-  
-> Note: The **Profile** name must be exactly the name of the VMware VM (source VM). If the script has a custom credential for the VM, the *"Default"* credential will be ignored.
-        
-### Delete a Credential:
-To delete a credential from Windows Credential Manager just fillout like this:
-
-![alt text](https://github.com/magnunscheffer/veeam/blob/main/linux-reip/img/csv-example-delete.PNG?raw=true)  
-
-> Note: The action must be **Delete** instead of **Add**. _Username_ and _Password_ are not required.
-  
-
-## Configuring the script Parameters:
-- Set the parameters in the reip.ps1:
-  - $vi_srv = The vCenter FQDN, _Example: "vcenter.domain.local"_
-  - $GetIPTentatives = Number of tentatives to get Guest IP Address from VMware, _Example: **3**_
-  - $Path = By default the path (for logs and csv) is the directory of the script itself. if you wish you can change to another directory.
-  - $credfile = Name of the credentials CSV file. By default is _"creds.csv").
 
 ## Associating this script "reip.ps1" with yours Failover Plans (Post Failover Script):
 

@@ -71,7 +71,7 @@ Its is necessary add vCenter and guests credencials to VRO, please visit the off
 | TargetVmName  | Text          | %target_vm_name% | This variable will get the Target (Replica)VM Name from currently phase inside the plan.     |
 | VCenterFQDN   | Text          | vCenter FQDN     | Put your vcenter FQDN to script connect during powercli execution.Ex: "vcenter.domain.local" |
 
-- Parameters Examples:
+Parameters Examples:
 <img src="https://github.com/magnunscheffer/veeam/blob/main/vro-linuxreip/img/parameters.png?raw=true" width="1207" height="453">
 
 

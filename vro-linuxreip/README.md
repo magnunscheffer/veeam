@@ -51,7 +51,10 @@ Its is necessary add vCenter and guests credencials to VRO, please visit the off
 - After this edit the script to add the mandatory parameters, select your script and click edit:
 
 <img src="https://github.com/magnunscheffer/veeam/blob/main/vro-linuxreip/img/Step4.png?raw=true" width="567" height="299">
-- Go to Parameters tab and Add the follow parameters:
+- Go to Parameters tab and first set the Execution Location to "Veeam Backup Server":
+
+<img src="https://github.com/magnunscheffer/veeam/blob/main/vro-linuxreip/img/Step5.png?raw=true" width="567" height="299">
+- Click "Add" and create all the parameters listed below:
   
 | Name          | Type          | Default Value    | Description                                                                                  |
 | ------------- | ------------- | ---------------- | -------------------------------------------------------------------------------------------- |
@@ -62,10 +65,13 @@ Its is necessary add vCenter and guests credencials to VRO, please visit the off
 | TargetVmName  | Text          | %target_vm_name% | This variable will get the Target (Replica)VM Name from currently phase inside the plan.     |
 | VCenterFQDN   | Text          | vCenter FQDN     | Put your vcenter FQDN to script connect during powercli execution.Ex: "vcenter.domain.local" |
 
-- Credentials Examples:
+- Parameters Examples:
 <img src="https://github.com/magnunscheffer/veeam/blob/main/vro-linuxreip/img/parameters.png?raw=true" width="1207" height="453">
 
-## Associating this to Your Replica Plan at Plans Steps during the Plan Creation or Editing the currently Plan:
+
+
+## Associating this script to yours Replica Plans
+> This script currently works only with Replica Plans. Use this script as a regular step on your Replica Plans, example:
 
 <img src="https://github.com/magnunscheffer/veeam/blob/main/vro-linuxreip/img/Plan.png?raw=true" width="1207" height="453">
 

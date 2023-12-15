@@ -38,9 +38,13 @@ Its is necessary add vCenter and guests credencials to VRO, please visit the off
 ## Creating the Custom Script 
 - Download the script from git hub, [download link](https://github.com/magnunscheffer/veeam/blob/main/vro-linuxreip/VRO-LinuxReIP.ps1)
 - Go to Administration --> Plan Steps --> Add --> Put a Name for your custom step, ex: "LinuxReIP" and click Next.
+(![alt text](https://github.com/magnunscheffer/veeam/blob/main/vro-linuxreip/img/Step1.png?raw=true)
 - Load the script using the buttom browser --> Click Next
+(![alt text](https://github.com/magnunscheffer/veeam/blob/main/vro-linuxreip/img/Step2.png?raw=true)
 - On Scopes click Next and Summary screem click Finish to end the wizard.
+(![alt text](https://github.com/magnunscheffer/veeam/blob/main/vro-linuxreip/img/Step3.png?raw=true)
 - After this edit the script to add the mandatory parameters, select your script and click edit:
+(![alt text](https://github.com/magnunscheffer/veeam/blob/main/vro-linuxreip/img/Step4.png?raw=true)
 - Go to Parameters tab and Add the follow parameters:
   
 | Name          | Type          | Default Value    | Description                                                                                  |
@@ -53,14 +57,16 @@ Its is necessary add vCenter and guests credencials to VRO, please visit the off
 | VCenterFQDN   | Text          | vCenter FQDN     | Put your vcenter FQDN to script connect during powercli execution.Ex: "vcenter.domain.local" |
 
 - Credential Example:
+(![alt text](https://github.com/magnunscheffer/veeam/blob/main/vro-linuxreip/img/Cred.png?raw=true)
 - Variable Example:
-- FQDN Example:
+(![alt text](https://github.com/magnunscheffer/veeam/blob/main/vro-linuxreip/img/Var.png?raw=true)
+- vCenter Example:
+(![alt text](https://github.com/magnunscheffer/veeam/blob/main/vro-linuxreip/img/vCenter.png?raw=true)
 
 
+## Associating this Your Failover Plan at Plans Steps during the Plan Creation or Editing the currently Plan:
 
-## Associating this script "reip.ps1" with yours Failover Plans (Post Failover Script):
-
-![alt text](https://github.com/magnunscheffer/veeam/blob/main/linux-reip/img/failoverplan-example.png?raw=true)
+![alt text](https://github.com/magnunscheffer/veeam/blob/main/vro-linuxreip/img/Step1.png?raw=true)
 
 > Note: How it Works: 
 > 

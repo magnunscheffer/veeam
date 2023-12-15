@@ -53,8 +53,9 @@ Its is necessary add vCenter and guests credencials to VRO, please visit the off
 <img src="https://github.com/magnunscheffer/veeam/blob/main/vro-linuxreip/img/Step4.png?raw=true" width="567" height="299">
 - Go to Parameters tab and first set the Execution Location to "Veeam Backup Server":
 
-<img src="https://github.com/magnunscheffer/veeam/blob/main/vro-linuxreip/img/Step5.png?raw=true" width="567" height="299">
+<img src="https://github.com/magnunscheffer/veeam/blob/main/vro-linuxreip/img/Step5.png?raw=true" width="628" height="525">
 - Click "Add" and create all the parameters listed below:
+
   
 | Name          | Type          | Default Value    | Description                                                                                  |
 | ------------- | ------------- | ---------------- | -------------------------------------------------------------------------------------------- |

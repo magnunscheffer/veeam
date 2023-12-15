@@ -33,7 +33,7 @@ Install-Module VMware.PowerCLI -Scope AllUsers -SkipPublisherCheck -Force
 Its is necessary add vCenter and guests credencials to VRO, please visit the official guide if you don't have experience it this step:
 [Add VRO Credentials](https://helpcenter.veeam.com/docs/vro/userguide/adding_credentials_manually.html?ver=70)
 
-<img src="https://helpcenter.veeam.com/docs/vro/userguide/images/add_creds.png" width="713" height="358">
+<img src="https://github.com/magnunscheffer/veeam/blob/main/vro-linuxreip/img/AddCred.png?raw=true" width="713" height="358">
 
 > Note: If you have more than one Linux Admin credential, repeat the process each additional credencial.
 
@@ -63,7 +63,7 @@ Its is necessary add vCenter and guests credencials to VRO, please visit the off
 | VCenterFQDN   | Text          | vCenter FQDN     | Put your vcenter FQDN to script connect during powercli execution.Ex: "vcenter.domain.local" |
 
 - Credentials Examples:
-<img src="https://github.com/magnunscheffer/veeam/blob/main/vro-linuxreip/img/Step4.png?raw=true" width="567" height="299">
+<img src="https://github.com/magnunscheffer/veeam/blob/main/vro-linuxreip/img/parameters.png?raw=true" width="1207" height="453">
 
 ## Associating this Your Failover Plan at Plans Steps during the Plan Creation or Editing the currently Plan:
 

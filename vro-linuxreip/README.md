@@ -93,7 +93,8 @@ Parameters Examples:
 <img src="https://github.com/magnunscheffer/veeam/blob/main/vro-linuxreip/img/exec3.png?raw=true">
 
 Full detailed report example avaliable bellow:
-[embed]"https://github.com/magnunscheffer/veeam/blob/main/vro-linuxreip/img/DataLab%20Test%20Report%20for%20VM%20Failover%20Plan%20with%20REIP%20(Windows%20%26%20Linux)%20-%202023-12-14%2020_49_15.pdf"[/embed]
+[embed]https://github.com/magnunscheffer/veeam/blob/main/vro-linuxreip/img/Report.pdf[/embed]
+
 
 
 

@@ -40,13 +40,17 @@ Its is necessary add vCenter and guests credencials to VRO, please visit the off
 ## Creating the Custom Script 
 - Download the script from git hub, [download link](https://github.com/magnunscheffer/veeam/blob/main/vro-linuxreip/VRO-LinuxReIP.ps1)
 - Go to Administration --> Plan Steps --> Add --> Put a Name for your custom step, ex: "LinuxReIP" and click Next.
-(![alt text](https://github.com/magnunscheffer/veeam/blob/main/vro-linuxreip/img/Step1.png?raw=true)
+
+<img src="https://github.com/magnunscheffer/veeam/blob/main/vro-linuxreip/img/Step1.png?raw=true" width="628" height="525">
 - Load the script using the buttom browser --> Click Next
-(![alt text](https://github.com/magnunscheffer/veeam/blob/main/vro-linuxreip/img/Step2.png?raw=true)
+
+<img src="https://github.com/magnunscheffer/veeam/blob/main/vro-linuxreip/img/Step2.png?raw=true" width="628" height="525">
 - On Scopes click Next and Summary screem click Finish to end the wizard.
-(![alt text](https://github.com/magnunscheffer/veeam/blob/main/vro-linuxreip/img/Step3.png?raw=true)
+
+<img src="https://github.com/magnunscheffer/veeam/blob/main/vro-linuxreip/img/Step3.png?raw=true" width="628" height="525">
 - After this edit the script to add the mandatory parameters, select your script and click edit:
-(![alt text](https://github.com/magnunscheffer/veeam/blob/main/vro-linuxreip/img/Step4.png?raw=true)
+
+<img src="https://github.com/magnunscheffer/veeam/blob/main/vro-linuxreip/img/Step4.png?raw=true" width="567" height="299">
 - Go to Parameters tab and Add the follow parameters:
   
 | Name          | Type          | Default Value    | Description                                                                                  |
@@ -58,13 +62,8 @@ Its is necessary add vCenter and guests credencials to VRO, please visit the off
 | TargetVmName  | Text          | %target_vm_name% | This variable will get the Target (Replica)VM Name from currently phase inside the plan.     |
 | VCenterFQDN   | Text          | vCenter FQDN     | Put your vcenter FQDN to script connect during powercli execution.Ex: "vcenter.domain.local" |
 
-- Credential Example:
-(![alt text](https://github.com/magnunscheffer/veeam/blob/main/vro-linuxreip/img/Cred.png?raw=true)
-- Variable Example:
-(![alt text](https://github.com/magnunscheffer/veeam/blob/main/vro-linuxreip/img/Var.png?raw=true)
-- vCenter Example:
-(![alt text](https://github.com/magnunscheffer/veeam/blob/main/vro-linuxreip/img/vCenter.png?raw=true)
-
+- Credentials Examples:
+<img src="https://github.com/magnunscheffer/veeam/blob/main/vro-linuxreip/img/Step4.png?raw=true" width="567" height="299">
 
 ## Associating this Your Failover Plan at Plans Steps during the Plan Creation or Editing the currently Plan:
 

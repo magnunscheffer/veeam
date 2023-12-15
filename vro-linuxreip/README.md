@@ -89,4 +89,12 @@ Parameters Examples:
 <img src="https://github.com/magnunscheffer/veeam/blob/main/vro-linuxreip/img/exec1.png?raw=true">
 <img src="https://github.com/magnunscheffer/veeam/blob/main/vro-linuxreip/img/exec2.png?raw=true">
 
+> Info: If you try to associate this script with a Windows VM, it will be ignored with a warning event:
+<img src="https://github.com/magnunscheffer/veeam/blob/main/vro-linuxreip/img/exec3.png?raw=true">
+
+Full detailed report example avaliable bellow:
+<img src="https://github.com/magnunscheffer/veeam/blob/main/vro-linuxreip/img/DataLab%20Test%20Report%20for%20VM%20Failover%20Plan%20with%20REIP%20(Windows%20%26%20Linux)%20-%202023-12-14%2020_49_15.pdf?raw=true">
+
+
+
 

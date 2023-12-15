@@ -65,15 +65,9 @@ Its is necessary add vCenter and guests credencials to VRO, please visit the off
 - Credentials Examples:
 <img src="https://github.com/magnunscheffer/veeam/blob/main/vro-linuxreip/img/parameters.png?raw=true" width="1207" height="453">
 
-## Associating this Your Failover Plan at Plans Steps during the Plan Creation or Editing the currently Plan:
+## Associating this to Your Replica Plan at Plans Steps during the Plan Creation or Editing the currently Plan:
 
-![alt text](https://github.com/magnunscheffer/veeam/blob/main/vro-linuxreip/img/Step1.png?raw=true)
+<img src="https://github.com/magnunscheffer/veeam/blob/main/vro-linuxreip/img/Plan.png?raw=true" width="1207" height="453">
 
-> Note: How it Works: 
-> 
-> The script will automatically discover the Failover Plan and VMs associated with this FP, if there are Windows VMs they will be ignored. 
+> If you have more than one Linux credential, remember to change this on each VM that is using a specific credential. More details [here](https://helpcenter.veeam.com/docs/vro/userguide/configuring_vms.html?ver=70).
 
-## Script Logic Summary:
-
-
-![alt text](https://github.com/magnunscheffer/veeam/blob/main/linux-reip/img/Re-IP.png?raw=true)
